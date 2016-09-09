@@ -1,0 +1,20 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.baozhunniu</groupId>
+		<artifactId>bzn-parent</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	<artifactId>bzn-fundamental</artifactId>
+	<packaging>pom</packaging>
+	<modules>
+		<module>bzn-fundamental-mongodb</module>
+		<module>bzn-fundamental-redis</module>
+		<module>bzn-fundamental-util</module>
+		<module>bzn-fundamental-sms</module>
+		<module>bzn-fundamental-thunder</module>
+		<module>bzn-fundamental-rpc</module>
+		<module>bzn-fundamental-mail</module>
+	</modules>
+</project>

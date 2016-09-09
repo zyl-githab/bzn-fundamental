@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+<configuration debug="false">
+	<jmxConfigurator />
+	
+	<property name="logDir" value="/data/logs/bzn" />
+
+	<!-- 控制台输出日志 -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+			<charset class="java.nio.charset.Charset">UTF-8</charset>
+		</layout>
+	</appender>
+
+	<!-- 文件输出日志 (文件大小策略进行文件输出, 超过指定大小对文件备份) -->
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${logDir}/fundamental-reids.log</File>
+		<append>true</append>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${logDir}/otherdays/fundamental-reids-%d{yyyyMMdd}.%i.log.zip</FileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>104857600</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<MaxHistory>360</MaxHistory>
+		</rollingPolicy>
+
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+			<charset class="java.nio.charset.Charset">UTF-8</charset>
+		</layout>
+	</appender>
+
+	<appender name="FILE-ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<OnMismatch>DENY</OnMismatch>
+			<OnMatch>ACCEPT</OnMatch>
+		</filter>
+
+		<File>${logDir}/fundamental-reids-err.log</File>
+		<append>true</append>
+		
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${logDir}/otherdays/fundamental-reids-err-%d{yyyyMMdd}.%i.log.zip</FileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>104857600</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<MaxHistory>360</MaxHistory>
+		</rollingPolicy>
+		
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+			<charset class="java.nio.charset.Charset">UTF-8</charset>
+		</layout>
+	</appender>
+	
+	<logger name="org.springframework">
+		<level value="INFO" />
+	</logger>
+	<logger name="com.alibaba.druid">
+		<level value="INFO" />
+	</logger>
+	<logger name="org.apache.commons">
+		<level value="INFO" />
+	</logger>
+
+	<logger name="com.baozhunniu">
+		<level value="DEBUG" />
+	</logger>
+	
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+		<appender-ref ref="FILE-ERROR" />
+	</root>
+</configuration>
