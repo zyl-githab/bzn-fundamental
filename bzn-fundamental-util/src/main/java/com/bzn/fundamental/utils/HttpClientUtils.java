@@ -106,9 +106,8 @@ public class HttpClientUtils {
 			if (params == null) {
 				return null;
 			}
-			StringEntity entity = new StringEntity(JSON.toJSONString(params));
-			entity.setContentType(ContentType.APPLICATION_JSON.getMimeType());
-			entity.setContentEncoding(CharEncoding.UTF_8);
+			HttpEntity entity = new StringEntity(JSON.toJSONString(params), ContentType
+					.create(ContentType.APPLICATION_JSON.getMimeType(), CharEncoding.UTF_8));
 			httpPost.setEntity(entity);
 			CloseableHttpClient httpClient = this.getConnection();
 			response = httpClient.execute(httpPost);
