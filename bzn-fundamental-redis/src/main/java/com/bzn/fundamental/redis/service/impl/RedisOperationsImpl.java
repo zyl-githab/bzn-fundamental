@@ -1,5 +1,6 @@
 package com.bzn.fundamental.redis.service.impl;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,11 @@ public class RedisOperationsImpl implements RedisOperations {
 
 	@Override
 	public void set(String key, String value, Long seconds) {
-		redisTemplate.boundValueOps(key).set(value, seconds, TimeUnit.SECONDS);
+		if (seconds == -1L) {
+			redisTemplate.boundValueOps(key).set(value);
+		} else {
+			redisTemplate.boundValueOps(key).set(value, seconds, TimeUnit.SECONDS);
+		}
 	}
 
 	@Override
@@ -42,18 +47,13 @@ public class RedisOperationsImpl implements RedisOperations {
 	}
 
 	@Override
+	public Long setHset(String key, String... values) {
+		return redisTemplate.boundSetOps(key).add(values);
+	}
+
+	@Override
 	public void setHashValue(String key, String fieldName, String value) {
 		redisTemplate.boundHashOps(key).put(fieldName, value);
-	}
-
-	@Override
-	public void delete(String key) {
-		redisTemplate.delete(key);
-	}
-
-	@Override
-	public String get(String key) {
-		return redisTemplate.boundValueOps(key).get();
 	}
 
 	@Override
@@ -67,8 +67,33 @@ public class RedisOperationsImpl implements RedisOperations {
 	}
 
 	@Override
+	public Long hashIncr(String key, String fieldName) {
+		return hashIncr(key, fieldName, 1L);
+	}
+
+	@Override
+	public Long hashIncr(String key, String fieldName, Long delta) {
+		return redisTemplate.boundHashOps(key).increment(fieldName, delta);
+	}
+
+	@Override
+	public void delete(String key) {
+		redisTemplate.delete(key);
+	}
+
+	@Override
+	public String get(String key) {
+		return redisTemplate.boundValueOps(key).get();
+	}
+
+	@Override
 	public Object getHashValue(String key, String fieldName) {
 		return redisTemplate.boundHashOps(key).get(fieldName);
+	}
+
+	@Override
+	public Map<Object, Object> getHashValue(String key) {
+		return redisTemplate.boundHashOps(key).entries();
 	}
 
 }

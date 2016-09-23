@@ -1,6 +1,6 @@
 package com.bzn.rpc.test.service.impl;
 
-import com.bzn.fundamental.rpc.netty.server.RpcService;
+import com.bzn.fundamental.rpc.netty.annotation.RpcService;
 import com.bzn.rpc.test.model.Person;
 import com.bzn.rpc.test.service.HelloService;
 

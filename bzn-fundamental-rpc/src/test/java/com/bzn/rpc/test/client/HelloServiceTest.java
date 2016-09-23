@@ -20,7 +20,7 @@ public class HelloServiceTest {
 
 	@Test
 	public void helloTest1() {
-		HelloService helloService = rpcClient.create(HelloService.class);
+		HelloService helloService = null;// rpcClient.create(HelloService.class);
 		String result = helloService.hello("World");
 
 		System.out.println("result:" + result);
@@ -29,7 +29,7 @@ public class HelloServiceTest {
 
 	@Test
 	public void helloTest2() {
-		HelloService helloService = rpcClient.create(HelloService.class);
+		HelloService helloService = null;// rpcClient.create(HelloService.class);
 		Person person = new Person("Yong", "Huang");
 		String result = helloService.hello(person);
 

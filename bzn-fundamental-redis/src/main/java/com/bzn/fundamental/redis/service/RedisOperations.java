@@ -1,5 +1,7 @@
 package com.bzn.fundamental.redis.service;
 
+import java.util.Map;
+
 /**
  * redis服务接口
  * 
@@ -27,6 +29,14 @@ public interface RedisOperations {
 	public void set(String key, String value, Long seconds);
 
 	/**
+	 * 设置set值
+	 * 
+	 * @param key
+	 * @param values
+	 */
+	public Long setHset(String key, String... values);
+
+	/**
 	 * 设置不重复的key
 	 * 
 	 * @param key
@@ -52,6 +62,25 @@ public interface RedisOperations {
 	 * @return
 	 */
 	public Long incr(String key);
+
+	/**
+	 * hash中的fieldName值自增1
+	 * 
+	 * @param key
+	 * @param fieldName
+	 * @return
+	 */
+	public Long hashIncr(String key, String fieldName);
+
+	/**
+	 * 将hash中的fieldName值自增delta
+	 * 
+	 * @param key
+	 * @param fieldName
+	 * @param delta
+	 * @return
+	 */
+	public Long hashIncr(String key, String fieldName, Long delta);
 
 	/**
 	 * 将key的值自增delta
@@ -85,4 +114,11 @@ public interface RedisOperations {
 	 */
 	public Object getHashValue(String key, String fieldName);
 
+	/**
+	 * 获取Hash中key值
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public Map<Object, Object> getHashValue(String key);
 }
