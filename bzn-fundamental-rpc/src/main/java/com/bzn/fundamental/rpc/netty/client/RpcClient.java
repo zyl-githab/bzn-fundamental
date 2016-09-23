@@ -1,69 +1,85 @@
 package com.bzn.fundamental.rpc.netty.client;
 
-import java.lang.reflect.Proxy;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.bzn.fundamental.rpc.netty.client.proxy.IAsyncObjectProxy;
-import com.bzn.fundamental.rpc.netty.client.proxy.ObjectProxy;
-import com.bzn.fundamental.rpc.netty.registry.ServiceDiscovery;
+import com.bzn.fundamental.rpc.netty.common.RpcDecoder;
+import com.bzn.fundamental.rpc.netty.common.RpcEncoder;
+import com.bzn.fundamental.rpc.netty.common.RpcRequest;
+import com.bzn.fundamental.rpc.netty.common.RpcResponse;
 
-/**
- * RPC Client
- * 
- * @author：fengli
- * @since：2016年8月22日 下午1:30:47
- * @version:
- */
-public class RpcClient {
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 
-	private String serverAddress;
-	private ServiceDiscovery serviceDiscovery;
-	private static ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(16, 16, 600L,
-			TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(65536));
+public class RpcClient extends SimpleChannelInboundHandler<RpcResponse> {
 
-	public RpcClient(String serverAddress) {
-		this.serverAddress = serverAddress;
-	}
+	private static final Logger LOGGER = LoggerFactory.getLogger(RpcClient.class);
 
-	public RpcClient(ServiceDiscovery serviceDiscovery) {
-		this.serviceDiscovery = serviceDiscovery;
-	}
+    private String host;
+    private int port;
 
-	@SuppressWarnings("unchecked")
-	public <T> T create(Class<T> interfaceClass) {
-		return (T) Proxy.newProxyInstance(interfaceClass.getClassLoader(),
-				new Class<?>[] { interfaceClass }, new ObjectProxy<T>(interfaceClass));
-	}
+    private RpcResponse response;
 
-	public <T> IAsyncObjectProxy createAsync(Class<T> interfaceClass) {
-		return new ObjectProxy<T>(interfaceClass);
-	}
+    private final Object obj = new Object();
 
-	public static void submit(Runnable task) {
-		threadPoolExecutor.submit(task);
-	}
+    public RpcClient(String host, int port) {
+        this.host = host;
+        this.port = port;
+    }
 
-	public void stop() {
-		threadPoolExecutor.shutdown();
-		serviceDiscovery.stop();
-		ConnectManage.getInstance().stop();
-	}
+    @Override
+    public void channelRead0(ChannelHandlerContext ctx, RpcResponse response) throws Exception {
+        this.response = response;
 
-	public String getServerAddress() {
-		return serverAddress;
-	}
+        synchronized (obj) {
+            obj.notifyAll(); // 收到响应，唤醒线程
+        }
+    }
 
-	public void setServerAddress(String serverAddress) {
-		this.serverAddress = serverAddress;
-	}
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        LOGGER.error("client caught exception", cause);
+        ctx.close();
+    }
 
-	public ServiceDiscovery getServiceDiscovery() {
-		return serviceDiscovery;
-	}
+    public RpcResponse send(RpcRequest request) throws Exception {
+        EventLoopGroup group = new NioEventLoopGroup();
+        try {
+            Bootstrap bootstrap = new Bootstrap();
+            bootstrap.group(group).channel(NioSocketChannel.class)
+                .handler(new ChannelInitializer<SocketChannel>() {
+                    @Override
+                    public void initChannel(SocketChannel channel) throws Exception {
+                        channel.pipeline()
+                            .addLast(new RpcEncoder(RpcRequest.class)) // 将 RPC 请求进行编码（为了发送请求）
+                            .addLast(new RpcDecoder(RpcResponse.class)) // 将 RPC 响应进行解码（为了处理响应）
+                            .addLast(RpcClient.this); // 使用 RpcClient 发送 RPC 请求
+                    }
+                })
+                .option(ChannelOption.SO_KEEPALIVE, true);
 
-	public void setServiceDiscovery(ServiceDiscovery serviceDiscovery) {
-		this.serviceDiscovery = serviceDiscovery;
-	}
+            ChannelFuture future = bootstrap.connect(host, port).sync();
+            future.channel().writeAndFlush(request).sync();
+
+            synchronized (obj) {
+                obj.wait(); // 未收到响应，使线程等待
+            }
+
+            if (response != null) {
+                future.channel().closeFuture().sync();
+            }
+            return response;
+        } finally {
+            group.shutdownGracefully();
+        }
+    }
+
 }

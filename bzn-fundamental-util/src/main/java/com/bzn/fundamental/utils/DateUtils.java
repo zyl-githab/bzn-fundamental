@@ -73,12 +73,11 @@ public class DateUtils {
 	 */
 	public static final String CN_SPRIT_DATE_FORMAT_MINUTE = "yyyy/MM/dd HH:mm";
 
-	public static final SimpleDateFormat yyyyMMdd = new SimpleDateFormat(
-			"yyyy-MM-dd");
-	public static final SimpleDateFormat yyyyMMdd_ = new SimpleDateFormat(
-			"yyyyMMdd");
+	public static final SimpleDateFormat yyyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
+	public static final SimpleDateFormat yyyyMMdd_ = new SimpleDateFormat("yyyyMMdd");
 	private static SimpleDateFormat shortSdf = new SimpleDateFormat("yyyy-MM-dd");
 	private static SimpleDateFormat longSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 	/**
 	 * 转换String时间为Date
 	 * 
@@ -94,6 +93,7 @@ public class DateUtils {
 		}
 		return d;
 	}
+
 	/**
 	 * 转换Date时间为String
 	 * 
@@ -109,6 +109,7 @@ public class DateUtils {
 		}
 		return d;
 	}
+
 	/**
 	 * 将字符串解析为日期
 	 * 
@@ -189,6 +190,35 @@ public class DateUtils {
 	public static Long addDay(Long time, Integer day) {
 		return time + getTime(day);
 	}
+
+	/**
+	 * 将日期字符串添加day天
+	 * 
+	 * @param time 毫秒数
+	 * @param day 天数
+	 * @return 毫秒数
+	 */
+	public static String addDay(String time, Integer day) {
+		return DateUtils.formatToYMD(
+				(DateUtils.getMillisByYMD(time, DateUtils.CN_DATETIME_FORMAT) + getTime(day)),
+				DateUtils.CN_DATETIME_FORMAT);
+	}
+
+	/**
+	 * 添加分钟数
+	 * @param time
+	 * @param minute
+	 * @return
+	 */
+	public static String addMinute(String time, Integer minute) {
+		return DateUtils.formatToYMD((DateUtils.getMillisByYMD(time, DateUtils.CN_DATETIME_FORMAT)
+				+ getMinuteTime(minute)), DateUtils.CN_DATETIME_FORMAT);
+	}
+
+	private static Long getMinuteTime(Integer minute) {
+		return minute * 60 * 1000L;
+	}
+	
 
 	/**
 	 * 将天数转换成毫秒数
@@ -308,7 +338,7 @@ public class DateUtils {
 	public static String getSysStr(String formater) {
 		return formatDate(new Date(), formater);
 	}
-	
+
 	/**
 	 * 获取系统时间：字符串
 	 * 
@@ -446,7 +476,7 @@ public class DateUtils {
 
 		return Integer.parseInt(String.valueOf(between_days));
 	}
-	
+
 	/**
 	 * 获得本天的开始时间，即2012-01-01 00:00:00
 	 * 
@@ -488,33 +518,35 @@ public class DateUtils {
 		long second = (endtime - now) / 1000;
 		return second;
 	}
-	
-	
+
 	/**
 	 * 投保单延迟2天
+	 * 
 	 * @param time
 	 * @param num
 	 * @return
 	 * @throws ParseException
 	 */
-	public static Calendar delayTwoDay(long time,int num) throws ParseException {
+	public static Calendar delayTwoDay(long time, int num) throws ParseException {
 		Calendar cal = Calendar.getInstance();
-		Date date=DateUtils.yyyyMMdd.parse(DateUtils.formatToYMD(DateUtils.addDay(time,num)));
+		Date date = DateUtils.yyyyMMdd.parse(DateUtils.formatToYMD(DateUtils.addDay(time, num)));
 		cal.setTime(date);
 		return cal;
 	}
+
 	/**
 	 * 投保单延迟2天在延迟一年减一天
+	 * 
 	 * @param time
 	 * @param num
 	 * @return
 	 * @throws ParseException
 	 */
-	public static Calendar delayOneYear(long time,int num) throws ParseException {
-		Calendar cal = Calendar.getInstance();  
-		Date dates=DateUtils.yyyyMMdd.parse(DateUtils.formatToYMD(DateUtils.addDay(time,num)));
+	public static Calendar delayOneYear(long time, int num) throws ParseException {
+		Calendar cal = Calendar.getInstance();
+		Date dates = DateUtils.yyyyMMdd.parse(DateUtils.formatToYMD(DateUtils.addDay(time, num)));
 		cal.setTime(dates);
-		cal.add(Calendar.YEAR,1);   
+		cal.add(Calendar.YEAR, 1);
 		return cal;
 	}
 
