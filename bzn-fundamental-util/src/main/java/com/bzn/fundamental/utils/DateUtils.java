@@ -127,6 +127,19 @@ public class DateUtils {
 	}
 
 	/**
+	 * 返回指定日期的月的第一天
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public static Date getFirstDayOfMonth(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), 1);
+		return calendar.getTime();
+	}
+
+	/**
 	 * 根据格式获取指定日期格式的字符串
 	 * 
 	 * @param date
@@ -206,6 +219,7 @@ public class DateUtils {
 
 	/**
 	 * 添加分钟数
+	 * 
 	 * @param time
 	 * @param minute
 	 * @return
@@ -218,7 +232,6 @@ public class DateUtils {
 	private static Long getMinuteTime(Integer minute) {
 		return minute * 60 * 1000L;
 	}
-	
 
 	/**
 	 * 将天数转换成毫秒数

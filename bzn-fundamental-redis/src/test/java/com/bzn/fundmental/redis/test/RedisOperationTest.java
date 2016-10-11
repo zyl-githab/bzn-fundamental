@@ -19,18 +19,20 @@ public class RedisOperationTest {
 	public void testSet() {
 		
 		;
-		System.out.println(redisOperations.getHashValue("open_policy_id_offset_hash"));
+		redisOperations.set("sync_data_switch","1",-1L);
 	}
 
 	@Test
 	public void testGet() {
-		redisOperations.delete("open_policy_id_offset");
+		System.out.println(redisOperations.get("sync_data_offset"));
+	/*	redisOperations.delete("sync_data_offset");
+	 	redisOperations.delete("open_policy_id_offset");
 		redisOperations.delete("baidu_pack_policy_id_offset");
 		redisOperations.delete("official_policy_id_offset");
 		redisOperations.delete("open_policy_id_offset_set");
 		redisOperations.delete("open_policy_id_offset_hash");
 		redisOperations.delete("open_policy_id_offset_lock");
-		redisOperations.delete("open_policy_id_old_offset");
+		redisOperations.delete("open_policy_id_old_offset");*/
 	//	redisOperations.set("open_policy_id_offset", "2016-06-01 00:00:01");
 		System.out.println("00");
 	}
