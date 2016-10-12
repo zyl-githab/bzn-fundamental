@@ -121,4 +121,12 @@ public interface RedisOperations {
 	 * @return
 	 */
 	public Map<Object, Object> getHashValue(String key);
+
+	/**
+	 * 判断key是否存在
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public Boolean hasKey(String key);
 }

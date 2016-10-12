@@ -95,5 +95,10 @@ public class RedisOperationsImpl implements RedisOperations {
 	public Map<Object, Object> getHashValue(String key) {
 		return redisTemplate.boundHashOps(key).entries();
 	}
+	
+	@Override
+	public Boolean hasKey(String key) {
+		return redisTemplate.hasKey(key);
+	}
 
 }
