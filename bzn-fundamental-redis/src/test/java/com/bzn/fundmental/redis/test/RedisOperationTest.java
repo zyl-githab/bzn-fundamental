@@ -17,9 +17,9 @@ public class RedisOperationTest {
 
 	@Test
 	public void testSet() {
-		
-		;
 		redisOperations.set("sync_data_switch","1",-1L);
+		redisOperations.delete("sync_data_offset");
+		redisOperations.delete("global_policy_id_offset");
 	}
 
 	@Test
