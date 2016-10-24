@@ -24,8 +24,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 
@@ -38,7 +38,7 @@ import com.alibaba.fastjson.JSON;
  */
 public class HttpClientUtils {
 
-	private final static Logger LOGGER = LogManager.getLogger(HttpClientUtils.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientUtils.class);
 	private PoolingHttpClientConnectionManager poolConnManager;
 	private final int maxTotalPool = 200;
 	private final int maxConPerRoute = 20;
