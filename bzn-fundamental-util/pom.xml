@@ -67,6 +67,31 @@
 			<groupId>org.logback-extensions</groupId>
 			<artifactId>logback-ext-spring</artifactId>
 		</dependency>
+		
+		<!-- Servlet -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
+		
+		<!-- Eaap -->
+		<dependency>
+			<groupId>com.eaap.comps</groupId>
+			<artifactId>eaap-web-common</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.eaap.comps</groupId>
+			<artifactId>eaap-common-utils</artifactId>
+			<version>1.0</version>
+		</dependency>
+		
 	</dependencies>
 	<build>
 		<plugins>
