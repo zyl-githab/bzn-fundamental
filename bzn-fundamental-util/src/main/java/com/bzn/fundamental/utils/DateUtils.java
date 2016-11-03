@@ -562,5 +562,54 @@ public class DateUtils {
 		cal.add(Calendar.YEAR, 1);
 		return cal;
 	}
+	
+	/**
+	 * 获取昨天
+	 * @return
+	 */
+	public static Date getYesterday(){
+		Calendar cal=Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.DATE,-1);
+		return cal.getTime();
+	}
+	
+	/**
+	 * 获取指定日期的第一秒 e.g. 2016-11-02 00:00:00
+	 * @param date
+	 * @return
+	 */
+	public static Date getDayFirstSecond(Date date){
+		Calendar cal=Calendar.getInstance();
+		cal.setTime(date);
+		cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+		return cal.getTime();
+	}
+	
+	/**
+	 * date转string yyyy-MM-dd HH:mm:ss
+	 * @param date
+	 * @return
+	 */
+	public static String formatDate(Date date){
+		String d = "";
+		try {
+			d = longSdf.format(date);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return d;
+	}
 
+	/**
+	 * 获取指定日期的最后一秒 e.g. 2016-11-02 23:59:59
+	 * @param date
+	 * @return
+	 */
+	public static Date getDayLastSecond(Date date){
+		Calendar cal=Calendar.getInstance();
+		cal.setTime(date);
+		cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), 23, 59, 59);
+		return cal.getTime();
+	}
 }
