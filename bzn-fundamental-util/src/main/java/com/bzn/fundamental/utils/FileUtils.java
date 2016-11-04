@@ -11,14 +11,11 @@ import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 
-import com.eaap.common.exception.BusinessException;
-import com.eaap.common.utils.servlet.ServletUtils;
-
 /**
  * 描述: 文件工具类</br>
  */
 public class FileUtils {
-	
+
 	/**
 	 * Java文件操作, 获取不带扩展名的文件名
 	 * 
@@ -34,7 +31,7 @@ public class FileUtils {
 		}
 		return fileName;
 	}
-	
+
 	/**
 	 * 获取自定义文件名
 	 * 
@@ -47,7 +44,7 @@ public class FileUtils {
 	public static String getCustomFileName(String prefix, String suffix, String ext) {
 		return prefix + suffix + ext;
 	}
-	
+
 	/**
 	 * 获取文件全限定名
 	 * 
@@ -60,7 +57,7 @@ public class FileUtils {
 	public static String getFullyFileName(String rootPath, String fileName, String ext) {
 		return rootPath + File.separator + fileName + ext;
 	}
-	
+
 	/**
 	 * 连接获取新文件路径
 	 *
@@ -86,7 +83,7 @@ public class FileUtils {
 		// 获取模板文件全限定名
 		return rootPath + File.separator + fileName + ext;
 	}
-	
+
 	/**
 	 * 获取PDF模板文件名
 	 *
@@ -94,7 +91,8 @@ public class FileUtils {
 	 * @param fileName PDF文件名
 	 * @return
 	 */
-	public static String geConcatFileName(String rootPath, String tempDir, String fileName, String ext) {
+	public static String geConcatFileName(String rootPath, String tempDir, String fileName,
+			String ext) {
 		// 获取模板文件全限定名
 		return rootPath + File.separator + tempDir + File.separator + fileName + ext;
 	}
@@ -104,62 +102,60 @@ public class FileUtils {
 	 *
 	 * @param file
 	 * @param response
+	 * @throws IOException
 	 */
-	public static void outputPDFStream(File file, HttpServletResponse response){
+	public static void outputPDFStream(File file, HttpServletResponse response) throws IOException {
 		response.setContentType("application/pdf");
-		response.addHeader("Content-Disposition", "attachment;filename="+ file.getName());
-		try{
-			FileInputStream inputStream = new FileInputStream(file);
-			OutputStream outputStream = response.getOutputStream();
-			int len = 0;
-			byte[] buffer = new byte[1024];
-			while ((len = inputStream.read(buffer)) > 0) {
-				outputStream.write(buffer, 0, len);
-			}
-			outputStream.flush();
-			outputStream.close();
-			inputStream.close();
-		} catch (Exception ex){
-			throw new BusinessException("无法输出pdf文件流: " + ex.getMessage());
+		response.addHeader("Content-Disposition", "attachment;filename=" + file.getName());
+		FileInputStream inputStream = new FileInputStream(file);
+		OutputStream outputStream = response.getOutputStream();
+		int len = 0;
+		byte[] buffer = new byte[1024];
+		while ((len = inputStream.read(buffer)) > 0) {
+			outputStream.write(buffer, 0, len);
 		}
+		outputStream.flush();
+		outputStream.close();
+		inputStream.close();
 	}
 
-	public static void outputPicStream(File file, HttpServletResponse response){
+	public static void outputPicStream(File file, HttpServletResponse response) throws IOException {
 		String fileName = file.getName();
 		String imageType = fileName.substring(fileName.indexOf(".") + 1);
 		response.setContentType("image/" + imageType);
-		ServletUtils.setNoCacheHeader(response);
-		try {
-			ImageIO.write(ImageIO.read(file), imageType,
-					response.getOutputStream());
-		} catch (Exception ex) {
-			throw new BusinessException("无法获取相关图片！");
-		}
+		//设置禁止客户端缓存的Header.
+		//Http 1.0 header
+        response.setDateHeader("Expires", 1L);
+        response.addHeader("Pragma", "no-cache");
+        //Http 1.1 header
+        response.setHeader("Cache-Control", "no-cache, no-store, max-age=0");
+		ImageIO.write(ImageIO.read(file), imageType, response.getOutputStream());
 	}
-	
+
 	/**
 	 * 生成ZIP文件
 	 *
 	 * @throws IOException
 	 */
-	public static File generateZipFile(String[] fileNameList, String baseDir, String zipName) throws IOException {
+	public static File generateZipFile(String[] fileNameList, String baseDir, String zipName)
+			throws IOException {
 		// 设置文件保存路径
 		if (!baseDir.endsWith("/")) {
 			baseDir += "/";
 		}
-		
+
 		// 目录不存在则创建
 		File dir = new File(baseDir);
 		if (!dir.exists()) {
 			dir.mkdirs();
 		}
-		
+
 		// 创建新文件, 如果存在则删除
 		File file = new File(baseDir + zipName);
 		if (file.exists()) {
 			file.delete();
 		}
-		
+
 		byte[] buffer = new byte[1024];
 		// 生成的ZIP文件
 		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(file));

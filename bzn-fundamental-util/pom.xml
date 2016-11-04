@@ -80,18 +80,6 @@
 			<version>1.2</version>
 		</dependency>
 		
-		<!-- Eaap -->
-		<dependency>
-			<groupId>com.eaap.comps</groupId>
-			<artifactId>eaap-web-common</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.eaap.comps</groupId>
-			<artifactId>eaap-common-utils</artifactId>
-			<version>1.0</version>
-		</dependency>
-		
 	</dependencies>
 	<build>
 		<plugins>
