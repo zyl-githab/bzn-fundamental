@@ -52,6 +52,18 @@ public class BeanUtils {
 			}
 		}
 	}
+	
+	/**
+	 * 将对象转为Map
+	 * @param source
+	 * @return Map
+	 */
+	public static Map<String, Object> Obj2Map(Object source)
+			throws ReflectiveOperationException {
+		Map<String, Object> map = new HashMap<>();
+		Obj2Map(source, map, null);
+		return map;
+	}
 
 	/**
 	 * 将对象中的属性拷贝到Map中

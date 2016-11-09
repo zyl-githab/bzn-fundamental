@@ -1,7 +1,11 @@
 package com.bzn.fundamental.utils;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.SocketTimeoutException;
+import java.net.URLEncoder;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.net.ssl.SSLContext;
 
@@ -10,6 +14,7 @@ import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
@@ -117,5 +122,66 @@ public class HttpClientUtils {
 			httpPost.releaseConnection();
 		}
 		return response;
+	}
+	
+	public String get(String url, Map<String, String> params){
+		String responseString = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append(url);
+		int i = 0;
+		for (Entry<String, String> entry : params.entrySet()) {
+			if (i == 0 && !url.contains("?")) {
+				sb.append("?");
+			} else {
+				sb.append("&");
+			}
+			sb.append(entry.getKey());
+			sb.append("=");
+			String value = entry.getValue();
+			try {
+				sb.append(URLEncoder.encode(value, "utf8"));
+			} catch (UnsupportedEncodingException e) {
+				LOGGER.warn("encode http get params error, value is " + value, e);
+				sb.append(URLEncoder.encode(value));
+			}
+			i++;
+		}
+		HttpGet get = new HttpGet(url);
+		try {
+			CloseableHttpResponse response = this.getConnection().execute(get);
+			try {
+				HttpEntity entity = response.getEntity();
+				try {
+					if (entity != null) {
+						responseString = EntityUtils.toString(entity, "utf8");
+					}
+				} finally {
+					if (entity != null) {
+						entity.getContent().close();
+					}
+				}
+			} catch (Exception e) {
+				LOGGER.error(
+						String.format("[HttpUtils Get]get response error, url:%s", sb.toString()),
+						e);
+				return responseString;
+			} finally {
+				if (response != null) {
+					response.close();
+				}
+			}
+			LOGGER.info(String.format("[HttpUtils Get]Debug url:%s , response string %s:",
+					sb.toString(), responseString));
+		} catch (SocketTimeoutException e) {
+			LOGGER.error(
+					String.format("[HttpUtils Get]invoke get timout error, url:%s", sb.toString()),
+					e);
+			return responseString;
+		} catch (Exception e) {
+			LOGGER.error(String.format("[HttpUtils Get]invoke get error, url:%s", sb.toString()), e);
+		} finally {
+			//get.releaseConnection();
+		}
+		return responseString;
 	}
 }
