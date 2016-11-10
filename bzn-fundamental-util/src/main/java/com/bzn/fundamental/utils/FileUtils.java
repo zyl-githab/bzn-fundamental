@@ -123,12 +123,12 @@ public class FileUtils {
 		String fileName = file.getName();
 		String imageType = fileName.substring(fileName.indexOf(".") + 1);
 		response.setContentType("image/" + imageType);
-		//设置禁止客户端缓存的Header.
-		//Http 1.0 header
-        response.setDateHeader("Expires", 1L);
-        response.addHeader("Pragma", "no-cache");
-        //Http 1.1 header
-        response.setHeader("Cache-Control", "no-cache, no-store, max-age=0");
+		// 设置禁止客户端缓存的Header.
+		// Http 1.0 header
+		response.setDateHeader("Expires", 1L);
+		response.addHeader("Pragma", "no-cache");
+		// Http 1.1 header
+		response.setHeader("Cache-Control", "no-cache, no-store, max-age=0");
 		ImageIO.write(ImageIO.read(file), imageType, response.getOutputStream());
 	}
 
@@ -176,4 +176,20 @@ public class FileUtils {
 		out.close();
 		return file;
 	}
+
+	/**
+	 * 移动文件
+	 * 
+	 * @param sourceFile 源文件（路径+文件）
+	 * @param target 目标路径
+	 */
+	public static void moveFile(String sourceFile, String target) {
+		File s = new File(sourceFile);
+		File t = new File(target);
+		if (!t.exists())
+			t.mkdirs();
+		File tf = new File(target + s.getName());
+		s.renameTo(tf);
+	}
+
 }
