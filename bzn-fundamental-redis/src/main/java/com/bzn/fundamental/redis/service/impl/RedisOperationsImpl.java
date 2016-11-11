@@ -1,6 +1,7 @@
 package com.bzn.fundamental.redis.service.impl;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,10 +96,15 @@ public class RedisOperationsImpl implements RedisOperations {
 	public Map<Object, Object> getHashValue(String key) {
 		return redisTemplate.boundHashOps(key).entries();
 	}
-	
+
 	@Override
 	public Boolean hasKey(String key) {
 		return redisTemplate.hasKey(key);
+	}
+
+	@Override
+	public Set<String> getKeys(String pattern) {
+		return redisTemplate.keys(pattern);
 	}
 
 }

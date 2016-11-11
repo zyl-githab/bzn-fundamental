@@ -47,6 +47,11 @@ public class DateUtils {
 	 * yyyyMMddHHmmss
 	 */
 	public static final String STRING_DATE_FORMAT = "yyyyMMddHHmmss";
+	
+	/*
+	 * yyyyMMddHHmm
+	 */
+	public static final String YYYYMMDDHHMM = "yyyyMMddHHmm";
 
 	/*
 	 * yyyyMMddHHmmssSSS

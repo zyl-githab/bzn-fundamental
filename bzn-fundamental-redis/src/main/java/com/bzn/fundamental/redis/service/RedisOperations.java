@@ -1,6 +1,7 @@
 package com.bzn.fundamental.redis.service;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * redis服务接口
@@ -129,4 +130,12 @@ public interface RedisOperations {
 	 * @return
 	 */
 	public Boolean hasKey(String key);
+
+	/**
+	 * 匹配所以的key
+	 * 
+	 * @param patten
+	 * @return
+	 */
+	Set<String> getKeys(String patten);
 }
