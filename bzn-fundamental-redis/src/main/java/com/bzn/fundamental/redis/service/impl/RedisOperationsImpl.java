@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,8 @@ import com.bzn.fundamental.redis.service.RedisOperations;
  */
 @Service("redisOperations")
 public class RedisOperationsImpl implements RedisOperations {
+	
+	private final static Logger LOGGER = LoggerFactory.getLogger(RedisOperationsImpl.class);
 
 	@Autowired
 	private RedisTemplate<String, String> redisTemplate;
@@ -105,6 +109,36 @@ public class RedisOperationsImpl implements RedisOperations {
 	@Override
 	public Set<String> getKeys(String pattern) {
 		return redisTemplate.keys(pattern);
+	}
+	
+	@Override
+	public Boolean tryLock(String key, Long timeout, TimeUnit unit) {
+
+		Long nano = System.nanoTime();
+		Long nanos = unit.toNanos(timeout);
+
+		try {
+			do {
+				if (setNx(key, "1")) {
+					return Boolean.TRUE;
+				}
+				if (timeout == 0L) {
+					break;
+				}
+				Thread.sleep(5);
+
+			} while ((System.nanoTime() - nano) < nanos);
+
+		} catch (InterruptedException e) {
+			LOGGER.info("redis get lock fail:" + e.getMessage());
+		}
+		return Boolean.FALSE;
+	}
+
+	
+	@Override
+	public void unLock(String key) {
+		redisTemplate.delete(key);
 	}
 
 }

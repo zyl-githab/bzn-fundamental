@@ -2,6 +2,7 @@ package com.bzn.fundamental.redis.service;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * redis服务接口
@@ -138,4 +139,21 @@ public interface RedisOperations {
 	 * @return
 	 */
 	Set<String> getKeys(String patten);
+
+	/**
+	 * redis 分布式锁
+	 * 
+	 * @param key
+	 * @param timeout
+	 * @param unit
+	 * @return
+	 */
+	Boolean tryLock(String key, Long timeout, TimeUnit unit);
+
+	/**
+	 * 释放锁
+	 * 
+	 * @param key
+	 */
+	void unLock(String key);
 }
