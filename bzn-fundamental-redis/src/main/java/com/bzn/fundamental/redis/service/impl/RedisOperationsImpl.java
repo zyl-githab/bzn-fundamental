@@ -21,7 +21,7 @@ import com.bzn.fundamental.redis.service.RedisOperations;
  */
 @Service("redisOperations")
 public class RedisOperationsImpl implements RedisOperations {
-	
+
 	private final static Logger LOGGER = LoggerFactory.getLogger(RedisOperationsImpl.class);
 
 	@Autowired
@@ -110,7 +110,7 @@ public class RedisOperationsImpl implements RedisOperations {
 	public Set<String> getKeys(String pattern) {
 		return redisTemplate.keys(pattern);
 	}
-	
+
 	@Override
 	public Boolean tryLock(String key, Long timeout, TimeUnit unit) {
 
@@ -135,10 +135,14 @@ public class RedisOperationsImpl implements RedisOperations {
 		return Boolean.FALSE;
 	}
 
-	
 	@Override
 	public void unLock(String key) {
 		redisTemplate.delete(key);
+	}
+
+	@Override
+	public void expire(String key, Long timeout) {
+		redisTemplate.expire(key, timeout, TimeUnit.SECONDS);
 	}
 
 }

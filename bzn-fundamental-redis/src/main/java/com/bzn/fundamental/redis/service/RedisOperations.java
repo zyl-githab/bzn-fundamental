@@ -140,6 +140,8 @@ public interface RedisOperations {
 	 */
 	Set<String> getKeys(String patten);
 
+	void expire(String key, Long timeout);
+
 	/**
 	 * redis 分布式锁
 	 * 
