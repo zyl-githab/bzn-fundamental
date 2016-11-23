@@ -4,15 +4,18 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.net.ssl.SSLContext;
 
-import org.apache.commons.lang3.CharEncoding;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -22,17 +25,14 @@ import org.apache.http.config.SocketConfig;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.alibaba.fastjson.JSON;
 
 /**
  * httpclient工具类
@@ -111,9 +111,11 @@ public class HttpClientUtils {
 			if (params == null) {
 				return null;
 			}
-			HttpEntity entity = new StringEntity(JSON.toJSONString(params), ContentType
-					.create(ContentType.APPLICATION_JSON.getMimeType(), CharEncoding.UTF_8));
-			httpPost.setEntity(entity);
+			List<NameValuePair> nvps = new ArrayList<>();
+			for (Entry<String, String> entry : params.entrySet()) {
+				nvps.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+			}
+			httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
 			CloseableHttpClient httpClient = this.getConnection();
 			response = httpClient.execute(httpPost);
 		} catch (Exception e) {
@@ -123,8 +125,8 @@ public class HttpClientUtils {
 		}
 		return response;
 	}
-	
-	public String get(String url, Map<String, String> params){
+
+	public String get(String url, Map<String, String> params) {
 		String responseString = null;
 		StringBuilder sb = new StringBuilder();
 		sb.append(url);
@@ -142,7 +144,7 @@ public class HttpClientUtils {
 				sb.append(URLEncoder.encode(value, "utf8"));
 			} catch (UnsupportedEncodingException e) {
 				LOGGER.warn("encode http get params error, value is " + value, e);
-				sb.append(URLEncoder.encode(value));
+				// sb.append(URLEncoder.encode(value));
 			}
 			i++;
 		}
@@ -178,9 +180,10 @@ public class HttpClientUtils {
 					e);
 			return responseString;
 		} catch (Exception e) {
-			LOGGER.error(String.format("[HttpUtils Get]invoke get error, url:%s", sb.toString()), e);
+			LOGGER.error(String.format("[HttpUtils Get]invoke get error, url:%s", sb.toString()),
+					e);
 		} finally {
-			//get.releaseConnection();
+			// get.releaseConnection();
 		}
 		return responseString;
 	}
