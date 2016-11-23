@@ -47,9 +47,9 @@ public class HttpClientUtils {
 	private PoolingHttpClientConnectionManager poolConnManager;
 	private final int maxTotalPool = 200;
 	private final int maxConPerRoute = 20;
-	private final int socketTimeout = 2000;
-	private final int connectionRequestTimeout = 3000;
-	private final int connectTimeout = 1000;
+	private final int socketTimeout = 20000;
+	private final int connectionRequestTimeout = 30000;
+	private final int connectTimeout = 10000;
 
 	public void init() {
 
@@ -126,7 +126,7 @@ public class HttpClientUtils {
 		} catch (Exception e) {
 			LOGGER.error("Exception", e.getMessage());
 		} finally {
-			httpPost.releaseConnection();
+//			httpPost.releaseConnection();
 		}
 		return response;
 	}
