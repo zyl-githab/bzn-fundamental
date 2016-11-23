@@ -76,6 +76,11 @@ public class HttpClientUtils {
 		return httpClient;
 	}
 
+	public static HttpClientUtils getHttpClient() {
+		HttpClientUtils httpClientUtils = new HttpClientUtils();
+		return httpClientUtils;
+	}
+
 	public String postMsg(String url, Map<String, String> params) {
 		String responseContent = null;
 
