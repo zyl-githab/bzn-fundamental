@@ -58,6 +58,15 @@ public interface MongoService<T> {
 	public WriteResult remove(Query query, String collectionName);
 
 	/**
+	 * 删除数据
+	 * 
+	 * @param query
+	 * @param collectionName
+	 * @return
+	 */
+	public List<T> removeAll(Query query, Class<T> clazz);
+
+	/**
 	 * 修改数据
 	 * 
 	 * @param query
@@ -67,14 +76,15 @@ public interface MongoService<T> {
 	 */
 	public WriteResult update(Query query, T entity, String collectionName);
 
-    /**
-     * 修改数据
-     * @param query
-     * @param update
-     * @param collectionName
-     * @return
-     */
-    public WriteResult update(Query query, Update update, String collectionName);
+	/**
+	 * 修改数据
+	 * 
+	 * @param query
+	 * @param update
+	 * @param collectionName
+	 * @return
+	 */
+	public WriteResult update(Query query, Update update, String collectionName);
 
 	/**
 	 * 根据条件查找单条数据
@@ -95,21 +105,24 @@ public interface MongoService<T> {
 	 */
 	public List<T> findAll(Query query, Class<T> entityClass, String collectionName);
 
-    /**
-     * 聚合数据
-     * @param aggregation
-     * @param collectionName
-     * @param entityClass
-     * @return
-     */
-    public AggregationResults<T> findByAggregation(Aggregation aggregation, String collectionName, Class<T> entityClass);
+	/**
+	 * 聚合数据
+	 * 
+	 * @param aggregation
+	 * @param collectionName
+	 * @param entityClass
+	 * @return
+	 */
+	public AggregationResults<T> findByAggregation(Aggregation aggregation, String collectionName,
+			Class<T> entityClass);
 
-    /**
-     * 查找数据条数
-     * @param query
-     * @param collectionName
-     * @return
-     */
-    public long getCount(Query query,String collectionName);
+	/**
+	 * 查找数据条数
+	 * 
+	 * @param query
+	 * @param collectionName
+	 * @return
+	 */
+	public long getCount(Query query, String collectionName);
 
 }

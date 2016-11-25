@@ -60,30 +60,35 @@ public class MongoServiceImpl<T> implements MongoService<T> {
 		return mongoTemplate.updateMulti(query, update, collectionName);
 	}
 
-    @Override
-    public WriteResult update(Query query, Update update, String collectionName) {
-        return mongoTemplate.upsert(query,update,collectionName);
-    }
+	@Override
+	public WriteResult update(Query query, Update update, String collectionName) {
+		return mongoTemplate.upsert(query, update, collectionName);
+	}
 
-    @Override
+	@Override
 	public T findOne(Query query, Class<T> entityClass, String collectionName) {
 		return mongoTemplate.findOne(query, entityClass, collectionName);
 	}
 
 	@Override
-	public List<T> findAll(Query query, Class<T> entityClass,
-			String collectionName) {
+	public List<T> findAll(Query query, Class<T> entityClass, String collectionName) {
 		return mongoTemplate.find(query, entityClass, collectionName);
 	}
 
-    @Override
-    public AggregationResults<T> findByAggregation(Aggregation aggregation, String collectionName, Class<T> entityClass) {
-        return mongoTemplate.aggregate(aggregation,collectionName, entityClass);
-    }
+	@Override
+	public AggregationResults<T> findByAggregation(Aggregation aggregation, String collectionName,
+			Class<T> entityClass) {
+		return mongoTemplate.aggregate(aggregation, collectionName, entityClass);
+	}
 
-    @Override
-    public long getCount(Query query, String collectionName) {
-        return mongoTemplate.count(query,collectionName);
-    }
+	@Override
+	public long getCount(Query query, String collectionName) {
+		return mongoTemplate.count(query, collectionName);
+	}
+
+	@Override
+	public List<T> removeAll(Query query, Class<T> clazz) {
+		return mongoTemplate.findAllAndRemove(query, clazz);
+	}
 
 }
