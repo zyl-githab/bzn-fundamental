@@ -83,28 +83,26 @@ public class HttpClientUtils {
 
 	public String postMsg(String url, Map<String, String> params) {
 		String responseContent = null;
-
-		CloseableHttpResponse response = post(url, params);
+		
+		HttpPost httpPost = new HttpPost(url);
 		try {
-			// 执行POST请求
-			HttpEntity entity = response.getEntity(); // 获取响应实体
-			if (null != entity) {
-				responseContent = EntityUtils.toString(entity, Consts.UTF_8);
-				entity.getContent().close();
+			if (params == null) {
+				return null;
 			}
-
+			List<NameValuePair> nvps = new ArrayList<>();
+			for (Entry<String, String> entry : params.entrySet()) {
+				nvps.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+			}
+			httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
+			CloseableHttpClient httpClient = this.getConnection();
+			CloseableHttpResponse response = httpClient.execute(httpPost);
+			responseContent = EntityUtils.toString(response.getEntity());
 		} catch (Exception e) {
+			e.printStackTrace();
 			LOGGER.error("Exception", e.getMessage());
 		} finally {
-			if (response != null) {
-				try {
-					response.close();
-				} catch (IOException e) {
-					LOGGER.error("Exception", e.getMessage());
-				}
-			}
+			httpPost.releaseConnection();
 		}
-
 		return responseContent;
 	}
 
@@ -124,9 +122,10 @@ public class HttpClientUtils {
 			CloseableHttpClient httpClient = this.getConnection();
 			response = httpClient.execute(httpPost);
 		} catch (Exception e) {
+			e.printStackTrace();
 			LOGGER.error("Exception", e.getMessage());
 		} finally {
-//			httpPost.releaseConnection();
+			httpPost.releaseConnection();
 		}
 		return response;
 	}
