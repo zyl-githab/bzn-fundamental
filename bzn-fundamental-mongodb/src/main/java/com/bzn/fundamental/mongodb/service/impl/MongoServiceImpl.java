@@ -2,16 +2,20 @@ package com.bzn.fundamental.mongodb.service.impl;
 
 import java.util.List;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.bzn.fundamental.mongodb.service.MongoService;
 import com.bzn.fundamental.mongodb.utils.UpdateBeanUtils;
+import com.mongodb.BasicDBObject;
 import com.mongodb.WriteResult;
 
 /**
@@ -89,6 +93,47 @@ public class MongoServiceImpl<T> implements MongoService<T> {
 	@Override
 	public List<T> removeAll(Query query, Class<T> clazz) {
 		return mongoTemplate.findAllAndRemove(query, clazz);
+	}
+
+	@Override
+	public WriteResult removeSubArrayElement(String fieldName, String elementId, String key,
+			String value, Class<T> clazz) {
+		Query query = Query.query(Criteria.where(key).is(value));
+		Update update = new Update();
+		update.pull(fieldName, new BasicDBObject("certNo", elementId));
+		return mongoTemplate.updateMulti(query, update, clazz);
+	}
+
+	@Override
+	public WriteResult removeSubArrayElements(String fieldName, List<String> elementIds, String key,
+			String value, Class<T> entityClass) {
+		Query query = Query.query(Criteria.where(key).is(value));
+		Update update = new Update();
+		if (CollectionUtils.isEmpty(elementIds)) {
+			return null;
+		}
+		BasicDBObject[] subObjects = new BasicDBObject[elementIds.size()];
+		int index = 0;
+		for (String elementId : elementIds) {
+			subObjects[index++] = new BasicDBObject("id", elementId);
+		}
+		update.pullAll(fieldName, subObjects);
+
+		return mongoTemplate.updateMulti(query, update, entityClass);
+	}
+
+	@Override
+	public WriteResult addSubArrayElements(String fieldName, Object[] elements, String key,
+			String value, Class<T> clazz) {
+		Query query = Query.query(Criteria.where(key).is(value));
+		Update update = new Update();
+		if (ArrayUtils.isEmpty(elements)) {
+			return null;
+		}
+		
+		update.pushAll(fieldName, elements);
+
+		return mongoTemplate.updateMulti(query, update, clazz);
 	}
 
 }
