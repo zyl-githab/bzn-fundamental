@@ -11,6 +11,16 @@ public class StringUtil extends StringUtils {
 		return Boolean.FALSE;
 	}
 
+	/**
+	 * 将对象转位字符串 null的时候转为""
+	 * 
+	 * @param objStr 需要转换的对象
+	 * @return String 转后的字符串
+	 */
+	public static String parseNull(Object objStr) {
+		return objStr == null ? "" : objStr.toString();
+	}
+
 	private static int compare(String str, String target) {
 		int d[][];
 		int n = str.length();

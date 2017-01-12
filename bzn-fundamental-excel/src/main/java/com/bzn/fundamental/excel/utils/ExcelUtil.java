@@ -112,7 +112,8 @@ public class ExcelUtil {
 			titleCell.setCellValue(title);
 			// 居中
 			CellStyle cs = workBook.createCellStyle();
-			cs.setAlignment(HorizontalAlignment.CENTER);;
+			cs.setAlignment(HorizontalAlignment.CENTER);
+			
 			titleCell.setCellStyle(cs);
 			// 合并单元格
 			int mergedColCount = 9;
@@ -173,8 +174,8 @@ public class ExcelUtil {
 			} else {
 				wb = new XSSFWorkbook(input);
 			}
-			int sheetNumber = wb.getNumberOfSheets();
-			for (int i = 0; i < sheetNumber; i++) {
+			//int sheetNumber = wb.getNumberOfSheets();
+			for (int i = 0; i < 1; i++) {
 				// 获取Sheet（工作薄）
 				Sheet sheet = wb.getSheetAt(i);
 
@@ -188,10 +189,13 @@ public class ExcelUtil {
 					isEmpty = true;
 				}
 				if (!isEmpty) {
-					for (int j = firstRow; j <= lastRow; j++) {
+					for (int j = firstRow; j < lastRow; j++) {
 						// 获取一行
 						Row row = sheet.getRow(j);
 
+						if (row == null) {
+							continue;
+						}
 						// 开始列数
 						int firstCell = row.getFirstCellNum();
 						// 结束列数
@@ -208,10 +212,10 @@ public class ExcelUtil {
 									continue;
 								}
 								Object value = null;
-								
+
 								@SuppressWarnings("deprecation")
-								int cellType =  cell.getCellType();
-							
+								int cellType = cell.getCellType();
+
 								if (cellType == 0) {
 									if (HSSFDateUtil.isCellDateFormatted(cell)) {
 										SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
