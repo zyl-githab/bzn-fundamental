@@ -26,7 +26,7 @@ public class RedisOperationTest {
 
 	@Test
 	public void testGet() {
-		System.out.println(redisOperations.get("sync_data_offset"));
+		System.out.println(redisOperations.get("customer_import_ac5e982a606f49f0ba785a1fd00160a4"));
 		/*
 		 * redisOperations.delete("sync_data_offset");
 		 * redisOperations.delete("open_policy_id_offset");

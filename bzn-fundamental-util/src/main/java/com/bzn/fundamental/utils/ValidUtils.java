@@ -89,4 +89,12 @@ public class ValidUtils {
 		return errorList;
 	}
 
+	public static String getValidErrorMsg(List<Map<String, Object>> paramList) {
+		StringBuilder sb = new StringBuilder("");
+		for (Map<String, Object> paramMap : paramList) {
+			sb.append(paramMap.get("message")).append(",");
+		}
+		return sb.toString();
+	}
+
 }
