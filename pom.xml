@@ -16,5 +16,6 @@
 		<module>bzn-fundamental-thunder</module>
 		<module>bzn-fundamental-rpc</module>
 		<module>bzn-fundamental-mail</module>
+		<module>bzn-fundamental-excel</module>
 	</modules>
 </project>

@@ -1,6 +1,5 @@
 package com.bzn.fundamental.utils;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
@@ -11,7 +10,6 @@ import java.util.Map.Entry;
 
 import javax.net.ssl.SSLContext;
 
-import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;

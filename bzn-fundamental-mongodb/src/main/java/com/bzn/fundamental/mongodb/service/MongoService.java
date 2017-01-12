@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
 import com.mongodb.WriteResult;
-import org.springframework.data.mongodb.core.query.Update;
 
 /**
  * Mongo操作接口
@@ -124,5 +124,45 @@ public interface MongoService<T> {
 	 * @return
 	 */
 	public long getCount(Query query, String collectionName);
+
+	/**
+	 * 添加数组元素
+	 * 
+	 * @param fieldName
+	 * @param elements
+	 * @param key
+	 * @param value
+	 * @param clazz
+	 * @return
+	 */
+	public WriteResult addSubArrayElements(String fieldName, Object[] elements, String key,
+			String value, Class<T> clazz);
+
+	/**
+	 * 删除子数组中一条数据
+	 * 
+	 * @param fieldName 属性名
+	 * @param elementId 数组id
+	 * @param key 主key
+	 * @param value 主key对应的值
+	 * @param clazz
+	 * 
+	 * @return
+	 */
+	public WriteResult removeSubArrayElement(String fieldName, String elementId, String key,
+			String value, Class<T> clazz);
+
+	/**
+	 * 删除子数组中多条数据
+	 * 
+	 * @param fieldName 属性名
+	 * @param elementIds 数组id集合
+	 * @param key 主key
+	 * @param value 主key对应的值
+	 * @param clazz
+	 * @return
+	 */
+	public WriteResult removeSubArrayElements(String fieldName, List<String> elementIds, String key,
+			String value, Class<T> clazz);
 
 }

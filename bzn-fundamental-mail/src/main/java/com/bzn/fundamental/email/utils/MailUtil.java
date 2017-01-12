@@ -28,6 +28,7 @@ import javax.mail.util.ByteArrayDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.util.CollectionUtils;
 
 import com.bzn.fundamental.email.model.MailAuthenticator;
 import com.bzn.fundamental.email.model.MailInfo;
@@ -134,7 +135,9 @@ public class MailUtil {
 		mailInfo.setSubject(subject);
 		mailInfo.setContent(content);
 		mailInfo.setToAddress(StringUtils.join(toAddressList, ","));
-		mailInfo.setToCCAddress(StringUtils.join(toCCAddressList, ","));
+		if (!CollectionUtils.isEmpty(toCCAddressList)) {
+			mailInfo.setToCCAddress(StringUtils.join(toCCAddressList, ","));
+		}
 		return sendTextMail(mailInfo);
 	}
 
