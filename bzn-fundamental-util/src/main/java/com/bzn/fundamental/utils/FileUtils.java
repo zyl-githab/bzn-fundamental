@@ -106,7 +106,7 @@ public class FileUtils {
 	 */
 	public static void outputPDFStream(File file, HttpServletResponse response) throws IOException {
 		response.setContentType("application/pdf");
-		response.addHeader("Content-Disposition", "attachment;filename=" + file.getName());
+		response.addHeader("Content-Disposition", "filename=" + file.getName());
 		FileInputStream inputStream = new FileInputStream(file);
 		OutputStream outputStream = response.getOutputStream();
 		int len = 0;
