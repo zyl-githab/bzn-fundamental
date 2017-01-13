@@ -7,8 +7,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.cloopen.rest.sdk.CCPRestSDK;
 
@@ -21,7 +21,7 @@ import com.cloopen.rest.sdk.CCPRestSDK;
  */
 public class SmsService {
 
-	private static Logger LOGGER = LogManager.getLogger(SmsService.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(SmsService.class);
 
 	private static ExecutorService executorService = Executors.newScheduledThreadPool(10,
 			Executors.defaultThreadFactory());

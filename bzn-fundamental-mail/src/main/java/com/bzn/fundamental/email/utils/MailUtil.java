@@ -26,8 +26,8 @@ import javax.mail.internet.MimeUtility;
 import javax.mail.util.ByteArrayDataSource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 import com.bzn.fundamental.email.model.MailAuthenticator;
@@ -45,7 +45,7 @@ public class MailUtil {
 	/**
 	 * logger:日志工具类
 	 */
-	private static final Logger LOGGER = LogManager.getLogger(MailUtil.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MailUtil.class);
 
 	// 邮件发送服务地址
 	private static String mailServerHost;

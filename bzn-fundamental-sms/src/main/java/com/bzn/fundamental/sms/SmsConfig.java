@@ -3,8 +3,8 @@ package com.bzn.fundamental.sms;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
@@ -20,7 +20,7 @@ public class SmsConfig {
 	/**
 	 * 日志工具类
 	 */
-	private static Logger LOGGER = LogManager.getLogger(SmsConfig.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(SmsConfig.class);
 
 	/**
 	 * 验证账户id
