@@ -113,7 +113,7 @@ public class ExcelUtil {
 			// 居中
 			CellStyle cs = workBook.createCellStyle();
 			cs.setAlignment(HorizontalAlignment.CENTER);
-			
+
 			titleCell.setCellStyle(cs);
 			// 合并单元格
 			int mergedColCount = 9;
@@ -174,7 +174,7 @@ public class ExcelUtil {
 			} else {
 				wb = new XSSFWorkbook(input);
 			}
-			//int sheetNumber = wb.getNumberOfSheets();
+			// int sheetNumber = wb.getNumberOfSheets();
 			for (int i = 0; i < 1; i++) {
 				// 获取Sheet（工作薄）
 				Sheet sheet = wb.getSheetAt(i);
@@ -189,7 +189,7 @@ public class ExcelUtil {
 					isEmpty = true;
 				}
 				if (!isEmpty) {
-					for (int j = firstRow; j < lastRow; j++) {
+					for (int j = firstRow; j <= lastRow; j++) {
 						// 获取一行
 						Row row = sheet.getRow(j);
 
