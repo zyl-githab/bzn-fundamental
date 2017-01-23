@@ -10,7 +10,10 @@
 	<packaging>jar</packaging>
 
 	<dependencies>
-
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>com.yuntongxun</groupId>
 			<artifactId>sms</artifactId>

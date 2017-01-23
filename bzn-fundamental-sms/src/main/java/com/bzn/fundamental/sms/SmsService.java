@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,14 +68,15 @@ public class SmsService {
 	public static HashMap<String, Object> sendSms(final String templateId, final String telNumbers,
 			final String[] datas) {
 		if (SmsConfig.CCP_SEND_SMS_SWITCH.equals(SmsConfig.CCP_SEND_SMS_CLOSE)) {
-			LOGGER.info("开关未打开，发送数据为：{telNumbers:" + telNumbers + ",datas" + datas + "}");
+			LOGGER.info("开关未打开，发送数据为：{telNumbers:" + telNumbers + ",datas"
+					+ ArrayUtils.toString(datas) + "}");
 			HashMap<String, Object> resultMap = new HashMap<>();
 			resultMap.put("statusCode", "99");
 			resultMap.put("statusMsg", "开关未打开");
 			return resultMap;
 		}
 
-		LOGGER.info("{telNumbers:" + telNumbers + ",datas" + datas + "}");
+		LOGGER.info("{telNumbers:" + telNumbers + ",datas" + ArrayUtils.toString(datas) + "}");
 
 		CCPRestSDK restApi = new CCPRestSDK();
 		restApi.init(SmsConfig.CCP_SERVER_IP, SmsConfig.CCP_SERVER_PORT);
