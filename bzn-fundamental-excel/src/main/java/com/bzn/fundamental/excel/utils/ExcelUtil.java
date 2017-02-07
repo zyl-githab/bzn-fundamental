@@ -1,7 +1,12 @@
 package com.bzn.fundamental.excel.utils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,6 +21,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -156,6 +162,120 @@ public class ExcelUtil {
 
 		}
 		return readExcel(inputStream, file.getOriginalFilename().split("\\.")[1]);
+	}
+
+	/**
+	 * 将数据写入excel
+	 * 
+	 * @param excelType
+	 * @param datalist
+	 * @param sheetName
+	 * @param path
+	 * @param fileName
+	 */
+	public static void writeExcel(String excelType, List<List<Object>> datalist, String sheetName,
+			String path, String fileName) {
+		Workbook wb = null;
+		if (ExcelExporter.EXCEL_TYPE_XLS.equals(excelType)) {
+			wb = new HSSFWorkbook();
+		} else {
+			wb = new XSSFWorkbook();
+		}
+
+		Sheet sheet = wb.createSheet(String.valueOf(0));
+		wb.setSheetName(0, sheetName);
+
+		int index = 0;
+		for (List<Object> data : datalist) {
+			Row row = sheet.createRow(index++);
+
+			int rowIndex = 0;
+			for (Object cols : data) {
+				Cell cell = row.createCell(rowIndex++);
+				cell.setCellType(CellType.STRING);// 文本格式
+				cell.setCellValue(cols == null ? "" : cols.toString());// 写入内容
+			}
+
+		}
+
+		OutputStream output = null;
+		try {
+			output = new FileOutputStream(path + File.separator + fileName);
+			wb.write(output);
+
+			output.close();
+			wb.close();
+		} catch (FileNotFoundException e) {
+
+		} catch (IOException e) {
+		}
+	}
+
+	/**
+	 * 写入警告信息到Excel
+	 * 
+	 * @param excelType
+	 * @param colIndex
+	 * @param datalist
+	 * @param filePath
+	 */
+	public static void writeWarnInfoExcel(String excelType, int colIndex,
+			List<List<Object>> datalist, String filePath) {
+
+		Workbook wb = null;
+		InputStream input = null;
+		OutputStream out = null;
+		try {
+			input = new FileInputStream(filePath);
+			if (ExcelExporter.EXCEL_TYPE_XLS.equals(excelType)) {
+				wb = new HSSFWorkbook(input);
+			} else {
+				wb = new XSSFWorkbook(input);
+			}
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		Sheet sheet = wb.getSheetAt(0);
+
+		Font font = wb.createFont();
+		font.setColor(Font.COLOR_RED);
+		font.setFontName("宋体"); // 设置字体
+		font.setFontHeightInPoints((short) 10); // 字体
+		CellStyle cellStyle = wb.createCellStyle();
+		cellStyle.setFont(font);
+		int rowIndex = 0;
+		for (List<Object> data : datalist) {
+			Row row = sheet.getRow(rowIndex++);
+
+			if (data.size() <= colIndex) {
+				continue;
+			}
+			Cell cell = row.createCell(colIndex);
+			cell.setCellType(CellType.STRING);// 文本格式
+			cell.setCellValue(data.get(colIndex) == null ? "" : data.get(colIndex).toString());
+			cell.setCellStyle(cellStyle);
+		}
+
+		try {
+
+			if (input != null) {
+				input.close();
+			}
+
+			out = new FileOutputStream(filePath);
+			wb.write(out);
+			if (wb != null) {
+				wb.close();
+			}
+			if (out != null) {
+				out.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

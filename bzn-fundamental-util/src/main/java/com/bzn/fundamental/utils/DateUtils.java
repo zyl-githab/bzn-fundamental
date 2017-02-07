@@ -47,7 +47,7 @@ public class DateUtils {
 	 * yyyyMMddHHmmss
 	 */
 	public static final String STRING_DATE_FORMAT = "yyyyMMddHHmmss";
-	
+
 	/*
 	 * yyyyMMddHHmm
 	 */
@@ -78,11 +78,6 @@ public class DateUtils {
 	 */
 	public static final String CN_SPRIT_DATE_FORMAT_MINUTE = "yyyy/MM/dd HH:mm";
 
-	public static final SimpleDateFormat yyyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
-	public static final SimpleDateFormat yyyyMMdd_ = new SimpleDateFormat("yyyyMMdd");
-	private static SimpleDateFormat shortSdf = new SimpleDateFormat("yyyy-MM-dd");
-	private static SimpleDateFormat longSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
 	/**
 	 * 转换String时间为Date
 	 * 
@@ -92,7 +87,8 @@ public class DateUtils {
 	public static Date parseString(String ds) {
 		Date d = null;
 		try {
-			d = yyyyMMdd_.parse(ds);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+			d = sdf.parse(ds);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -108,6 +104,7 @@ public class DateUtils {
 	public static String parseDate(Date date) {
 		String d = "";
 		try {
+			SimpleDateFormat yyyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
 			d = yyyyMMdd.format(date);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -503,7 +500,8 @@ public class DateUtils {
 	public static Date getCurrentDayStartTime() {
 		Date now = new Date();
 		try {
-			now = shortSdf.parse(shortSdf.format(now));
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			now = sdf.parse(sdf.format(now));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -518,7 +516,10 @@ public class DateUtils {
 	public static Date getCurrentDayEndTime() {
 		Date now = new Date();
 		try {
-			now = longSdf.parse(shortSdf.format(now) + " 23:59:59");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat longSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+			now = longSdf.parse(sdf.format(now) + " 23:59:59");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -547,7 +548,8 @@ public class DateUtils {
 	 */
 	public static Calendar delayTwoDay(long time, int num) throws ParseException {
 		Calendar cal = Calendar.getInstance();
-		Date date = DateUtils.yyyyMMdd.parse(DateUtils.formatToYMD(DateUtils.addDay(time, num)));
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		Date date = sdf.parse(DateUtils.formatToYMD(DateUtils.addDay(time, num)));
 		cal.setTime(date);
 		return cal;
 	}
@@ -562,43 +564,49 @@ public class DateUtils {
 	 */
 	public static Calendar delayOneYear(long time, int num) throws ParseException {
 		Calendar cal = Calendar.getInstance();
-		Date dates = DateUtils.yyyyMMdd.parse(DateUtils.formatToYMD(DateUtils.addDay(time, num)));
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		Date dates = sdf.parse(DateUtils.formatToYMD(DateUtils.addDay(time, num)));
 		cal.setTime(dates);
 		cal.add(Calendar.YEAR, 1);
 		return cal;
 	}
-	
+
 	/**
 	 * 获取昨天
+	 * 
 	 * @return
 	 */
-	public static Date getYesterday(){
-		Calendar cal=Calendar.getInstance();
+	public static Date getYesterday() {
+		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
-		cal.add(Calendar.DATE,-1);
+		cal.add(Calendar.DATE, -1);
 		return cal.getTime();
 	}
-	
+
 	/**
 	 * 获取指定日期的第一秒 e.g. 2016-11-02 00:00:00
+	 * 
 	 * @param date
 	 * @return
 	 */
-	public static Date getDayFirstSecond(Date date){
-		Calendar cal=Calendar.getInstance();
+	public static Date getDayFirstSecond(Date date) {
+		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
-		cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+		cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), 0,
+				0, 0);
 		return cal.getTime();
 	}
-	
+
 	/**
 	 * date转string yyyy-MM-dd HH:mm:ss
+	 * 
 	 * @param date
 	 * @return
 	 */
-	public static String formatDate(Date date){
+	public static String formatDate(Date date) {
 		String d = "";
 		try {
+			SimpleDateFormat longSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			d = longSdf.format(date);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -608,13 +616,15 @@ public class DateUtils {
 
 	/**
 	 * 获取指定日期的最后一秒 e.g. 2016-11-02 23:59:59
+	 * 
 	 * @param date
 	 * @return
 	 */
-	public static Date getDayLastSecond(Date date){
-		Calendar cal=Calendar.getInstance();
+	public static Date getDayLastSecond(Date date) {
+		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
-		cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), 23, 59, 59);
+		cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), 23,
+				59, 59);
 		return cal.getTime();
 	}
 }
