@@ -67,7 +67,7 @@ public class RandCodeUtils {
 		StringBuilder sb = new StringBuilder("");
 		for (int i = 0; i < length; i++) {
 			int random = RandomUtils.nextInt(0, 2);
-			if (random == 0 && strIndex < 4) {
+			if (random == 0 && strIndex < strLength) {
 				sb.append(randomCode.charAt(strIndex++));
 			} else {
 				sb.append(RandomUtils.nextInt(0, 10));
@@ -115,5 +115,11 @@ public class RandCodeUtils {
 			sb.append(arr2[(int) (Math.random() * arr2.length)]);
 		}
 		return sb.toString();
+	}
+	
+	public static void main(String[] args) {
+		for (int i = 0; i < 100; i++) {
+			System.out.println(uniqueRandomCode(12, 4, null, 500));
+		}
 	}
 }
