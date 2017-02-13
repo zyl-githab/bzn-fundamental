@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -154,14 +155,16 @@ public class ExcelUtil {
 	 * @param file
 	 * @return
 	 */
-	public static List<List<Object>> readExcel(MultipartFile file) {
+	public static List<List<Object>> readExcel(MultipartFile file, int sheetIndex,
+			int beginReadRow) {
 		InputStream inputStream = null;
 		try {
 			inputStream = file.getInputStream();
 		} catch (IOException e) {
 
 		}
-		return readExcel(inputStream, file.getOriginalFilename().split("\\.")[1]);
+		return readExcel(inputStream, file.getOriginalFilename().split("\\.")[1], sheetIndex,
+				beginReadRow);
 	}
 
 	/**
@@ -284,7 +287,8 @@ public class ExcelUtil {
 	 * @param input
 	 * @return
 	 */
-	public static List<List<Object>> readExcel(InputStream input, String excelType) {
+	public static List<List<Object>> readExcel(InputStream input, String excelType, int sheetIndex,
+			int beginReadRow) {
 		List<List<Object>> dataList = new ArrayList<List<Object>>();
 		// 新建WorkBook
 		Workbook wb = null;
@@ -295,70 +299,68 @@ public class ExcelUtil {
 				wb = new XSSFWorkbook(input);
 			}
 			// int sheetNumber = wb.getNumberOfSheets();
-			for (int i = 0; i < 1; i++) {
-				// 获取Sheet（工作薄）
-				Sheet sheet = wb.getSheetAt(i);
+			// 获取Sheet（工作薄）
+			Sheet sheet = wb.getSheetAt(sheetIndex);
 
-				// 开始行数
-				int firstRow = sheet.getFirstRowNum();
-				// 结束行数
-				int lastRow = sheet.getLastRowNum();
-				// 判断该Sheet（工作薄)是否为空
-				boolean isEmpty = false;
-				if (firstRow == lastRow) {
-					isEmpty = true;
-				}
-				if (!isEmpty) {
-					for (int j = firstRow; j <= lastRow; j++) {
-						// 获取一行
-						Row row = sheet.getRow(j);
+			// 开始行数
+			int firstRow = sheet.getFirstRowNum();
+			// 结束行数
+			int lastRow = sheet.getLastRowNum();
+			// 判断该Sheet（工作薄)是否为空
+			boolean isEmpty = false;
+			if (firstRow == lastRow || beginReadRow > lastRow) {
+				isEmpty = true;
+			}
+			if (!isEmpty) {
+				for (int j = beginReadRow; j <= lastRow; j++) {
+					// 获取一行
+					Row row = sheet.getRow(j);
 
-						if (row == null) {
-							continue;
-						}
-						// 开始列数
-						int firstCell = row.getFirstCellNum();
-						// 结束列数
-						int lastCell = row.getLastCellNum();
-						// 判断该行是否为空
-						List<Object> rowData = new ArrayList<Object>();
-						if (firstCell != lastCell) {
-							for (int k = firstCell; k < lastCell; k++) {
-								// 获取一个单元格
-								Cell cell = row.getCell(k);
-
-								if (cell == null) {
-									rowData.add("");
-									continue;
-								}
-								Object value = null;
-
-								@SuppressWarnings("deprecation")
-								int cellType = cell.getCellType();
-
-								if (cellType == 0) {
-									if (HSSFDateUtil.isCellDateFormatted(cell)) {
-										SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-										Date date = cell.getDateCellValue();
-										value = sdf.format(date);
-
-									} else {
-										value = StringUtil.doubleTrans(cell.getNumericCellValue());
-									}
-								} else if (cellType == 1) {
-									value = cell.getStringCellValue();
-								} else if (cellType == 4) {
-									value = cell.getBooleanCellValue();
-								} else if (HSSFDateUtil.isCellDateFormatted(cell)) {
-									SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-									Date theDate = cell.getDateCellValue();
-									value = sdf.format(theDate);
-								}
-								rowData.add(value);
-							}
-						}
-						dataList.add(rowData);
+					if (row == null) {
+						continue;
 					}
+					// 开始列数
+					int firstCell = row.getFirstCellNum();
+					// 结束列数
+					int lastCell = row.getLastCellNum();
+					// 判断该行是否为空
+					List<Object> rowData = new ArrayList<Object>();
+					if (firstCell != lastCell) {
+						for (int k = firstCell; k < lastCell; k++) {
+							// 获取一个单元格
+							Cell cell = row.getCell(k);
+
+							if (cell == null) {
+								rowData.add("");
+								continue;
+							}
+							Object value = null;
+
+							@SuppressWarnings("deprecation")
+							int cellType = cell.getCellType();
+
+							if (cellType == 0) {
+								if (HSSFDateUtil.isCellDateFormatted(cell)) {
+									SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+									Date date = cell.getDateCellValue();
+									value = sdf.format(date);
+
+								} else {
+									value = StringUtil.doubleTrans(cell.getNumericCellValue());
+								}
+							} else if (cellType == 1) {
+								value = cell.getStringCellValue();
+							} else if (cellType == 4) {
+								value = cell.getBooleanCellValue();
+							} else if (HSSFDateUtil.isCellDateFormatted(cell)) {
+								SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+								Date theDate = cell.getDateCellValue();
+								value = sdf.format(theDate);
+							}
+							rowData.add(value);
+						}
+					}
+					dataList.add(rowData);
 				}
 			}
 		} catch (IOException e) {
@@ -381,5 +383,46 @@ public class ExcelUtil {
 		}
 
 		return dataList;
+	}
+
+	public static String[] getHeader(InputStream input, String excelType, int sheetIndex) {
+		Workbook wb = null;
+		try {
+			if (ExcelExporter.EXCEL_TYPE_XLS.equals(excelType)) {
+				wb = new HSSFWorkbook(input);
+			} else {
+				wb = new XSSFWorkbook(input);
+			}
+			// 获取Sheet（工作薄）
+			Sheet sheet = wb.getSheetAt(sheetIndex);
+			Row headRow = sheet.getRow(0);
+			if (headRow == null) {
+				return new String[] {};
+			}
+			Iterator<Cell> cellIterator = headRow.cellIterator();
+			List<String> header = new ArrayList<String>();
+			do {
+				header.add(cellIterator.next().getStringCellValue());
+			} while (cellIterator.hasNext());
+			return header.toArray(new String[header.size()]);
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage());
+		} finally {
+			if (wb != null) {
+				try {
+					wb.close();
+				} catch (IOException e) {
+					LOGGER.error(e.getMessage());
+				}
+			}
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					LOGGER.error(e.getMessage());
+				}
+			}
+		}
+		return new String[] {};
 	}
 }

@@ -644,4 +644,89 @@ public class IdCardUtil {
 		}
 		return (iDate >= 1) && (iDate <= datePerMonth);
 	}
+
+	/**
+	 * 根据身份证号, 自动获取对应的星座
+	 * 
+	 * @param idCard 身份证号码
+	 * @return 星座
+	 */
+	public static String getConstellationById(String idCard) {
+		if (!validateCard(idCard))
+			return "";
+		int month = getMonthByIdCard(idCard);
+		int day = getDateByIdCard(idCard);
+		String strValue = "";
+
+		if ((month == 1 && day >= 20) || (month == 2 && day <= 18)) {
+			strValue = "水瓶座";
+		} else if ((month == 2 && day >= 19) || (month == 3 && day <= 20)) {
+			strValue = "双鱼座";
+		} else if ((month == 3 && day > 20) || (month == 4 && day <= 19)) {
+			strValue = "白羊座";
+		} else if ((month == 4 && day >= 20) || (month == 5 && day <= 20)) {
+			strValue = "金牛座";
+		} else if ((month == 5 && day >= 21) || (month == 6 && day <= 21)) {
+			strValue = "双子座";
+		} else if ((month == 6 && day > 21) || (month == 7 && day <= 22)) {
+			strValue = "巨蟹座";
+		} else if ((month == 7 && day > 22) || (month == 8 && day <= 22)) {
+			strValue = "狮子座";
+		} else if ((month == 8 && day >= 23) || (month == 9 && day <= 22)) {
+			strValue = "处女座";
+		} else if ((month == 9 && day >= 23) || (month == 10 && day <= 23)) {
+			strValue = "天秤座";
+		} else if ((month == 10 && day > 23) || (month == 11 && day <= 22)) {
+			strValue = "天蝎座";
+		} else if ((month == 11 && day > 22) || (month == 12 && day <= 21)) {
+			strValue = "射手座";
+		} else if ((month == 12 && day > 21) || (month == 1 && day <= 19)) {
+			strValue = "魔羯座";
+		}
+
+		return strValue;
+	}
+
+	/**
+	 * 根据身份证号, 自动获取对应的生肖
+	 * 
+	 * @param idCard 身份证号码
+	 * @return 生肖
+	 */
+	public static String getZodiacById(String idCard) { // 根据身份证号, 自动返回对应的生肖
+		if (!validateCard(idCard))
+			return "";
+		String sSX[] = { "猪", "鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗" };
+		int year = getYearByIdCard(idCard);
+		int end = 3;
+		int x = (year - end) % 12;
+
+		String retValue = "";
+		retValue = sSX[x];
+
+		return retValue;
+	}
+
+	/**
+	 * 根据身份证号, 自动获取对应的天干地支
+	 * 
+	 * @param idCard 身份证号码
+	 * @return 天干地支
+	 */
+	public static String getChineseEraById(String idCard) { // 根据身份证号, 自动返回对应的生肖
+		if (!validateCard(idCard))
+			return "";
+
+		String sTG[] = { "癸", "甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "任" };
+		String sDZ[] = { "亥", "子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌" };
+
+		int year = getYearByIdCard(idCard);
+		int i = (year - 3) % 10;
+		int j = (year - 3) % 12;
+
+		String retValue = "";
+		retValue = sTG[i] + sDZ[j];
+
+		return retValue;
+	}
 }
