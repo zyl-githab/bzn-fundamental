@@ -46,6 +46,18 @@ public class FileUtils {
 	}
 
 	/**
+	 * 获取文件扩展名
+	 * 
+	 * @return
+	 */
+	public static String getExt(String fileName) {
+		if(fileName.lastIndexOf(".") != -1){
+			return fileName.substring(fileName.lastIndexOf(".") + 1);
+		}
+		return "";
+	}
+
+	/**
 	 * 获取文件全限定名
 	 * 
 	 * @param rootPath 文件所在目录路径

@@ -17,6 +17,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -219,11 +220,11 @@ public class ExcelUtil {
 	 * 
 	 * @param excelType
 	 * @param colIndex
-	 * @param datalist
+	 * @param errorInfo
 	 * @param filePath
 	 */
 	public static void writeWarnInfoExcel(String excelType, int colIndex,
-			List<List<Object>> datalist, String filePath) {
+			Map<Integer, String> errorInfo, String filePath) {
 
 		Workbook wb = null;
 		InputStream input = null;
@@ -249,19 +250,16 @@ public class ExcelUtil {
 		font.setFontHeightInPoints((short) 10); // 字体
 		CellStyle cellStyle = wb.createCellStyle();
 		cellStyle.setFont(font);
-		int rowIndex = 0;
-		for (List<Object> data : datalist) {
-			Row row = sheet.getRow(rowIndex++);
-
-			if (data.size() <= colIndex) {
+		for (int i = 0; i < sheet.getLastRowNum(); i++) {
+			if (StringUtils.isBlank(errorInfo.get(i))) {
 				continue;
 			}
+			Row row = sheet.getRow(i);
 			Cell cell = row.createCell(colIndex);
 			cell.setCellType(CellType.STRING);// 文本格式
-			cell.setCellValue(data.get(colIndex) == null ? "" : data.get(colIndex).toString());
+			cell.setCellValue(errorInfo.get(i));
 			cell.setCellStyle(cellStyle);
 		}
-
 		try {
 
 			if (input != null) {
