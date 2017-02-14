@@ -91,8 +91,9 @@ public class ExcelTemplateUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static List<List<Object>> readExcel(MultipartFile file) {
-		return ExcelUtil.readExcel(file);
+	public static List<List<Object>> readExcel(MultipartFile file, int sheetIndex,
+			int beginReadRow, int beginReadCol) {
+		return ExcelUtil.readExcel(file, sheetIndex, beginReadRow, beginReadCol);
 	}
 
 	/**
@@ -102,7 +103,8 @@ public class ExcelTemplateUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static List<List<Object>> readExcel(InputStream input) {
-		return ExcelUtil.readExcel(input, "xls");
+	public static List<List<Object>> readExcel(InputStream input, int sheetIndex,
+			int beginReadRow, int beginReadCol) {
+		return ExcelUtil.readExcel(input, "xls", sheetIndex, beginReadRow, beginReadCol);
 	}
 }

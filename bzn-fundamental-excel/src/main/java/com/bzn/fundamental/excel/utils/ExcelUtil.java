@@ -155,8 +155,8 @@ public class ExcelUtil {
 	 * @param file
 	 * @return
 	 */
-	public static List<List<Object>> readExcel(MultipartFile file, int sheetIndex,
-			int beginReadRow) {
+	public static List<List<Object>> readExcel(MultipartFile file, int sheetIndex, int beginReadRow,
+			int beginReadCol) {
 		InputStream inputStream = null;
 		try {
 			inputStream = file.getInputStream();
@@ -164,7 +164,7 @@ public class ExcelUtil {
 
 		}
 		return readExcel(inputStream, file.getOriginalFilename().split("\\.")[1], sheetIndex,
-				beginReadRow);
+				beginReadRow, beginReadCol);
 	}
 
 	/**
@@ -288,7 +288,7 @@ public class ExcelUtil {
 	 * @return
 	 */
 	public static List<List<Object>> readExcel(InputStream input, String excelType, int sheetIndex,
-			int beginReadRow) {
+			int beginReadRow, int beginReadCol) {
 		List<List<Object>> dataList = new ArrayList<List<Object>>();
 		// 新建WorkBook
 		Workbook wb = null;
@@ -320,13 +320,13 @@ public class ExcelUtil {
 						continue;
 					}
 					// 开始列数
-					int firstCell = row.getFirstCellNum();
+					// int firstCell = row.getFirstCellNum();
 					// 结束列数
 					int lastCell = row.getLastCellNum();
 					// 判断该行是否为空
 					List<Object> rowData = new ArrayList<Object>();
-					if (firstCell != lastCell) {
-						for (int k = firstCell; k < lastCell; k++) {
+					if (beginReadCol != lastCell) {
+						for (int k = beginReadCol; k < lastCell; k++) {
 							// 获取一个单元格
 							Cell cell = row.getCell(k);
 
