@@ -314,7 +314,7 @@ public class ExcelUtil {
 					// 获取一行
 					Row row = sheet.getRow(j);
 
-					if (row == null) {
+					if (isBlankRow(row)) {
 						continue;
 					}
 					// 开始列数
@@ -381,6 +381,16 @@ public class ExcelUtil {
 		}
 
 		return dataList;
+	}
+	
+	private static boolean isBlankRow(Row row){
+		Iterator<Cell> cellIterator = row.cellIterator();
+		do {
+			if(!StringUtils.isBlank(cellIterator.next().getStringCellValue())){
+				return false;
+			}
+		} while (cellIterator.hasNext());
+		return true;
 	}
 
 	public static String[] getHeader(InputStream input, String excelType, int sheetIndex) {
