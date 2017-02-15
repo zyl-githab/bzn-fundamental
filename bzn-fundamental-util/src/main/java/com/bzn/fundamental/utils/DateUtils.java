@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 日期处理工具类
@@ -456,6 +458,7 @@ public class DateUtils {
 	 */
 	public static Long getMillisByYMD(String ymd, String ft) {
 		SimpleDateFormat format = new SimpleDateFormat(ft);
+		format.setLenient(false); 
 		try {
 			Date dt = format.parse(ymd);
 			return dt.getTime();
@@ -626,5 +629,23 @@ public class DateUtils {
 		cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), 23,
 				59, 59);
 		return cal.getTime();
+	}
+
+	/**
+	 * 校验日期格式是否正确
+	 * 
+	 * @param dateStr
+	 * @return
+	 */
+	public static boolean isValidDate(String dateStr) {
+		if (null == dateStr || "".equals(dateStr)) {
+			return false;
+		}
+		String eL = "^((\\d{2}(([02468][048])|([13579][26]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])))))"
+				+ "|(\\d{2}(([02468][1235679])|([13579][01345789]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|(1[0-9])|(2[0-8])))))"
+				+ ")";
+		Pattern p = Pattern.compile(eL);
+		Matcher m = p.matcher(dateStr);
+		return m.matches();
 	}
 }
