@@ -81,6 +81,9 @@ public class DateUtils {
 	 */
 	public static final String CN_SPRIT_DATE_FORMAT_MINUTE = "yyyy/MM/dd HH:mm";
 
+	public static String DATE_FORMAT_FULL_STRING = "yyyy-MM-dd HH:mm:ss";
+	public static String DATE_FORMAT_DATE_STRING = "yyyy-MM-dd";
+
 	/**
 	 * 转换String时间为Date
 	 * 
@@ -660,10 +663,10 @@ public class DateUtils {
 	public static String format(Date date, String pattern) {
 		return format(date, new SimpleDateFormat(pattern));
 	}
-	
+
 	public static String format(String srcDate, String srcPattern, String descPattern) {
-        return format(parse(srcDate, srcPattern), descPattern);
-    }
+		return format(parse(srcDate, srcPattern), descPattern);
+	}
 
 	public static String format(Date date, DateFormat df) {
 		if (date == null)
