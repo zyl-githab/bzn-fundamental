@@ -1,5 +1,6 @@
 package com.bzn.fundamental.utils;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -654,5 +655,19 @@ public class DateUtils {
 	 */
 	public static String getFullCurrentTimeNoSeparator() {
 		return new SimpleDateFormat(STRING_DATE_FORMAT).format(new Date());
+	}
+
+	public static String format(Date date, String pattern) {
+		return format(date, new SimpleDateFormat(pattern));
+	}
+	
+	public static String format(String srcDate, String srcPattern, String descPattern) {
+        return format(parse(srcDate, srcPattern), descPattern);
+    }
+
+	public static String format(Date date, DateFormat df) {
+		if (date == null)
+			return null;
+		return df.format(date);
 	}
 }
