@@ -458,7 +458,7 @@ public class DateUtils {
 	 */
 	public static Long getMillisByYMD(String ymd, String ft) {
 		SimpleDateFormat format = new SimpleDateFormat(ft);
-		format.setLenient(false); 
+		format.setLenient(false);
 		try {
 			Date dt = format.parse(ymd);
 			return dt.getTime();
@@ -647,5 +647,12 @@ public class DateUtils {
 		Pattern p = Pattern.compile(eL);
 		Matcher m = p.matcher(dateStr);
 		return m.matches();
+	}
+
+	/**
+	 * @return format:yyyyMMddHHmmss
+	 */
+	public static String getFullCurrentTimeNoSeparator() {
+		return new SimpleDateFormat(STRING_DATE_FORMAT).format(new Date());
 	}
 }
