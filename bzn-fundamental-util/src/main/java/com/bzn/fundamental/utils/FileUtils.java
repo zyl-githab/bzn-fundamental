@@ -51,7 +51,7 @@ public class FileUtils {
 	 * @return
 	 */
 	public static String getExt(String fileName) {
-		if(fileName.lastIndexOf(".") != -1){
+		if (fileName.lastIndexOf(".") != -1) {
 			return fileName.substring(fileName.lastIndexOf(".") + 1);
 		}
 		return "";
@@ -107,6 +107,18 @@ public class FileUtils {
 			String ext) {
 		// 获取模板文件全限定名
 		return rootPath + File.separator + tempDir + File.separator + fileName + ext;
+	}
+
+	/**
+	 * 获取XLS模板文件名
+	 *
+	 * @param rootPath 文件所在目录路径
+	 * @param fileName XLS文件名
+	 * @return
+	 */
+	public static String getPreserveXlsTempletName(String rootPath, String fileName) {
+		// 获取模板文件全限定名
+		return getFullyFileName(rootPath, fileName + "_preserve", ".xls");
 	}
 
 	/**
