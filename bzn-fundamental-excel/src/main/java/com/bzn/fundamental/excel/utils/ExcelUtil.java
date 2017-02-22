@@ -149,6 +149,11 @@ public class ExcelUtil {
 		}
 		return workBook;
 	}
+	
+	public static List<List<Object>> readExcel(MultipartFile file) {
+		return readExcel(file, 0, 0, 0);
+	}
+
 
 	/**
 	 * 读取excel的原始内容
