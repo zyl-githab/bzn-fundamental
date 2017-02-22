@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -315,7 +316,7 @@ public class ExcelUtil {
 				isEmpty = true;
 			}
 			if (!isEmpty) {
-				for (int j = beginReadRow; j <= lastRow; j++) {
+				for (int j = beginReadRow; j < lastRow; j++) {
 					// 获取一行
 					Row row = sheet.getRow(j);
 
@@ -391,7 +392,9 @@ public class ExcelUtil {
 	private static boolean isBlankRow(Row row){
 		Iterator<Cell> cellIterator = row.cellIterator();
 		do {
-			if(!StringUtils.isBlank(cellIterator.next().getStringCellValue())){
+			@SuppressWarnings("deprecation")
+			int cellType =  cellIterator.next().getCellType();
+			if(cellType != 3){
 				return false;
 			}
 		} while (cellIterator.hasNext());
