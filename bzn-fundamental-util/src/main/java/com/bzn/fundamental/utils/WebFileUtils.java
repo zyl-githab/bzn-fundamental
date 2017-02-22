@@ -14,6 +14,10 @@ import java.util.zip.ZipOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
 
 public class WebFileUtils {
@@ -34,6 +38,24 @@ public class WebFileUtils {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * 文件下载
+	 * 
+	 * @throws IOException
+	 */
+	public static ResponseEntity<byte[]> downloadFile(HttpServletRequest request, File file,
+			String dlName) throws IOException {
+		// 解决中文名称乱码问题
+		String fileName = processFileName(request, dlName);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		headers.setContentDispositionFormData("attachment", fileName);
+		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		return new ResponseEntity<byte[]>(org.apache.commons.io.FileUtils.readFileToByteArray(file),
+				headers, HttpStatus.OK);
 	}
 
 	/**
