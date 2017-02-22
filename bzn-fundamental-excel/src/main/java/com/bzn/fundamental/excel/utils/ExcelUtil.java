@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -150,11 +149,10 @@ public class ExcelUtil {
 		}
 		return workBook;
 	}
-	
+
 	public static List<List<Object>> readExcel(MultipartFile file) {
 		return readExcel(file, 0, 0, 0);
 	}
-
 
 	/**
 	 * 读取excel的原始内容
@@ -311,6 +309,7 @@ public class ExcelUtil {
 			// 结束行数
 			int lastRow = sheet.getLastRowNum();
 			// 判断该Sheet（工作薄)是否为空
+			int firstRowNum = 0;
 			boolean isEmpty = false;
 			if (firstRow == lastRow || beginReadRow > lastRow) {
 				isEmpty = true;
@@ -320,17 +319,21 @@ public class ExcelUtil {
 					// 获取一行
 					Row row = sheet.getRow(j);
 
-					if (isBlankRow(row)) {
+					if (row == null || isBlankRow(row)) {
+						dataList.add(null);
 						continue;
 					}
 					// 开始列数
 					// int firstCell = row.getFirstCellNum();
 					// 结束列数
 					int lastCell = row.getLastCellNum();
+					if (firstRowNum == 0) {
+						firstRowNum = lastCell;
+					}
 					// 判断该行是否为空
 					List<Object> rowData = new ArrayList<Object>();
-					if (beginReadCol != lastCell) {
-						for (int k = beginReadCol; k < lastCell; k++) {
+					if (beginReadCol != firstRowNum) {
+						for (int k = beginReadCol; k < firstRowNum; k++) {
 							// 获取一个单元格
 							Cell cell = row.getCell(k);
 
@@ -360,6 +363,8 @@ public class ExcelUtil {
 								SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 								Date theDate = cell.getDateCellValue();
 								value = sdf.format(theDate);
+							} else {
+								value = "";
 							}
 							rowData.add(value);
 						}
@@ -388,13 +393,13 @@ public class ExcelUtil {
 
 		return dataList;
 	}
-	
-	private static boolean isBlankRow(Row row){
+
+	private static boolean isBlankRow(Row row) {
 		Iterator<Cell> cellIterator = row.cellIterator();
 		do {
 			@SuppressWarnings("deprecation")
-			int cellType =  cellIterator.next().getCellType();
-			if(cellType != 3){
+			int cellType = cellIterator.next().getCellType();
+			if (cellType != 3) {
 				return false;
 			}
 		} while (cellIterator.hasNext());

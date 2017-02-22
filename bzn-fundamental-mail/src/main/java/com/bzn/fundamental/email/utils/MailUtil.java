@@ -329,6 +329,12 @@ public class MailUtil {
 				InternetAddress[] iaToCCList = InternetAddress.parse(mailInfo.getToCCAddress());
 				mailMessage.setRecipients(Message.RecipientType.CC, iaToCCList);
 			}
+			
+			// 创建邮件的接收者地址，并设置到邮件消息中
+			if(StringUtils.isNotEmpty(mailInfo.getToBCCAddress())){
+				InternetAddress[] iaToBCCList = InternetAddress.parse(mailInfo.getToBCCAddress());
+				mailMessage.setRecipients(Message.RecipientType.BCC, iaToBCCList);
+			}
 
 			if (StringUtils.isNotEmpty(mailInfo.getNickName())) {
 				try {

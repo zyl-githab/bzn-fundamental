@@ -27,6 +27,9 @@ public class MailInfo {
 	// 邮件抄送接收者的地址
 	private String toCCAddress;
 
+	// 邮件抄送接收者的地址
+	private String toBCCAddress;
+
 	// 登陆邮件发送服务器的用户名和密码
 	private String userName;
 
@@ -98,6 +101,14 @@ public class MailInfo {
 
 	public void setToCCAddress(String toCCAddress) {
 		this.toCCAddress = toCCAddress;
+	}
+
+	public String getToBCCAddress() {
+		return toBCCAddress;
+	}
+
+	public void setToBCCAddress(String toBCCAddress) {
+		this.toBCCAddress = toBCCAddress;
 	}
 
 	public String getUserName() {
