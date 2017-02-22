@@ -316,7 +316,7 @@ public class ExcelUtil {
 				isEmpty = true;
 			}
 			if (!isEmpty) {
-				for (int j = beginReadRow; j < lastRow; j++) {
+				for (int j = beginReadRow; j <= lastRow; j++) {
 					// 获取一行
 					Row row = sheet.getRow(j);
 
@@ -330,7 +330,7 @@ public class ExcelUtil {
 					// 判断该行是否为空
 					List<Object> rowData = new ArrayList<Object>();
 					if (beginReadCol != lastCell) {
-						for (int k = beginReadCol; k <= lastCell; k++) {
+						for (int k = beginReadCol; k < lastCell; k++) {
 							// 获取一个单元格
 							Cell cell = row.getCell(k);
 
