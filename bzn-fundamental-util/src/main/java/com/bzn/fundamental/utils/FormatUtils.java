@@ -17,12 +17,12 @@ import org.joda.time.DateTime;
  * @version 1.0.0
  * @date 2016.03.22
  * 
- * Copyright © 2016 BZN Corporation, All Rights Reserved.
+ *       Copyright © 2016 BZN Corporation, All Rights Reserved.
  */
 public class FormatUtils {
-	
+
 	private static SimpleDateFormat shortSdf = new SimpleDateFormat("yyyy-MM-dd");
-	
+
 	/**
 	 * 将Date类型转换为String类型, 并格式化
 	 */
@@ -30,7 +30,7 @@ public class FormatUtils {
 		DateTime dt = new DateTime(date);
 		return dt.toString("yyyy-MM-dd");
 	}
-	
+
 	/**
 	 * 将Date类型转换为String类型, 并格式化
 	 */
@@ -51,13 +51,13 @@ public class FormatUtils {
 		if (v == null) {
 			v = new BigDecimal("0.00");
 		}
-		
+
 		v = v.setScale(2, BigDecimal.ROUND_HALF_UP);
 		DecimalFormat df = new DecimalFormat("#.00");
-		
+
 		return df.format(v.doubleValue());
 	}
-	
+
 	/**
 	 * BigDecimal四舍五入, 并设置精度
 	 */
@@ -69,7 +69,7 @@ public class FormatUtils {
 		}
 		return v;
 	}
-	
+
 	/**
 	 * 将字符串解析为日期
 	 * 
@@ -85,7 +85,7 @@ public class FormatUtils {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * 获得本天的开始时间，即2012-01-01 00:00:00
 	 * 
@@ -99,6 +99,13 @@ public class FormatUtils {
 			e.printStackTrace();
 		}
 		return now;
+	}
+
+	public static boolean isMobile(String str) {
+		if (StringUtils.isBlank(str)) {
+			return false;
+		}
+		return str.trim().matches("^1\\d{10}$"); // 验证手机号 (1开通，11位数字)
 	}
 
 }

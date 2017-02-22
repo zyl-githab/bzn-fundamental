@@ -83,6 +83,7 @@ public class DateUtils {
 
 	public static String DATE_FORMAT_FULL_STRING = "yyyy-MM-dd HH:mm:ss";
 	public static String DATE_FORMAT_DATE_STRING = "yyyy-MM-dd";
+	public static SimpleDateFormat DATE_FORMAT_DATE = new SimpleDateFormat(CN_DATE_FORMAT);
 
 	/**
 	 * 转换String时间为Date
@@ -672,5 +673,9 @@ public class DateUtils {
 		if (date == null)
 			return null;
 		return df.format(date);
+	}
+
+	public static String getTodayEndTime() {
+		return DATE_FORMAT_DATE.format(new Date()) + " 23:59:59";
 	}
 }
