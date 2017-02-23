@@ -289,6 +289,7 @@ public class ExcelUtil {
 	 * @param input
 	 * @return
 	 */
+	@SuppressWarnings("deprecation")
 	public static List<List<Object>> readExcel(InputStream input, String excelType, int sheetIndex,
 			int beginReadRow, int beginReadCol) {
 		List<List<Object>> dataList = new ArrayList<List<Object>>();
@@ -300,7 +301,6 @@ public class ExcelUtil {
 			} else {
 				wb = new XSSFWorkbook(input);
 			}
-			// int sheetNumber = wb.getNumberOfSheets();
 			// 获取Sheet（工作薄）
 			Sheet sheet = wb.getSheetAt(sheetIndex);
 
@@ -308,8 +308,9 @@ public class ExcelUtil {
 			int firstRow = sheet.getFirstRowNum();
 			// 结束行数
 			int lastRow = sheet.getLastRowNum();
-			// 判断该Sheet（工作薄)是否为空
-			int firstRowNum = 0;
+			// 表头列数
+			int rowCellCount = sheet.getRow(firstRow).getLastCellNum();
+			// 判断该Sheet（工作薄）是否为空
 			boolean isEmpty = false;
 			if (firstRow == lastRow || beginReadRow > lastRow) {
 				isEmpty = true;
@@ -318,22 +319,16 @@ public class ExcelUtil {
 				for (int j = beginReadRow; j <= lastRow; j++) {
 					// 获取一行
 					Row row = sheet.getRow(j);
-
+					// 判断该行是否为空
 					if (row == null || isBlankRow(row)) {
 						dataList.add(null);
 						continue;
 					}
-					// 开始列数
-					// int firstCell = row.getFirstCellNum();
 					// 结束列数
-					int lastCell = row.getLastCellNum();
-					if (firstRowNum == 0) {
-						firstRowNum = lastCell;
-					}
-					// 判断该行是否为空
+					// int lastCell = row.getLastCellNum();
 					List<Object> rowData = new ArrayList<Object>();
-					if (beginReadCol != firstRowNum) {
-						for (int k = beginReadCol; k < firstRowNum; k++) {
+					if (beginReadCol != rowCellCount) {
+						for (int k = beginReadCol; k < rowCellCount; k++) {
 							// 获取一个单元格
 							Cell cell = row.getCell(k);
 
@@ -343,10 +338,8 @@ public class ExcelUtil {
 							}
 							Object value = null;
 
-							@SuppressWarnings("deprecation")
 							int cellType = cell.getCellType();
-
-							if (cellType == 0) {
+							if (cellType == CellType.NUMERIC.getCode()) {
 								if (HSSFDateUtil.isCellDateFormatted(cell)) {
 									SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 									Date date = cell.getDateCellValue();
@@ -355,9 +348,9 @@ public class ExcelUtil {
 								} else {
 									value = StringUtil.doubleTrans(cell.getNumericCellValue());
 								}
-							} else if (cellType == 1) {
+							} else if (cellType == CellType.STRING.getCode()) {
 								value = cell.getStringCellValue();
-							} else if (cellType == 4) {
+							} else if (cellType == CellType.BOOLEAN.getCode()) {
 								value = cell.getBooleanCellValue();
 							} else if (HSSFDateUtil.isCellDateFormatted(cell)) {
 								SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -394,18 +387,18 @@ public class ExcelUtil {
 		return dataList;
 	}
 
+	@SuppressWarnings("deprecation")
 	private static boolean isBlankRow(Row row) {
 		Iterator<Cell> cellIterator = row.cellIterator();
 		do {
-			@SuppressWarnings("deprecation")
-			int cellType = cellIterator.next().getCellType();
-			if (cellType != 3) {
+			if (cellIterator.next().getCellType() != CellType.BLANK.getCode()) {
 				return false;
 			}
 		} while (cellIterator.hasNext());
 		return true;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static String[] getHeader(InputStream input, String excelType, int sheetIndex) {
 		Workbook wb = null;
 		try {
@@ -423,7 +416,10 @@ public class ExcelUtil {
 			Iterator<Cell> cellIterator = headRow.cellIterator();
 			List<String> header = new ArrayList<String>();
 			do {
-				header.add(cellIterator.next().getStringCellValue());
+				Cell cell = cellIterator.next();
+				if (cell.getCellType() == CellType.STRING.getCode()) {
+					header.add(cell.getStringCellValue());
+				}
 			} while (cellIterator.hasNext());
 			return header.toArray(new String[header.size()]);
 		} catch (IOException e) {
