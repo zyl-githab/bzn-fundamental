@@ -35,6 +35,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -131,20 +132,27 @@ public class ExcelUtil {
 			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 0 + mergedColCount - 1));
 			// 表头
 			XSSFRow headRow = sheet.createRow(1);
-			for (int i = 0; i < headList.length; i++) {
-				XSSFCell headCell = headRow.createCell(i, CellType.STRING);
-				headCell.setCellValue(headList[i]);
-			}
-			int rowNumber = 2;
-			for (int j = 0; j < sheetData.size(); j++) {
-				XSSFRow row = sheet.createRow(rowNumber);
-				List<Object> rowData = sheetData.get(j);
-				for (int k = 0; k < rowData.size(); k++) {
-					XSSFCell cell = row.createCell(k);
-					Object data = rowData.get(k);
-					cell.setCellValue(StringUtil.parseNull(data));
+
+			int rowNumber = 1;
+			if (ArrayUtils.isNotEmpty(headList)) {
+				for (int i = 0; i < headList.length; i++) {
+					XSSFCell headCell = headRow.createCell(i, CellType.STRING);
+					headCell.setCellValue(headList[i]);
 				}
 				rowNumber++;
+			}
+
+			if (!CollectionUtils.isEmpty(sheetData)) {
+				for (int j = 0; j < sheetData.size(); j++) {
+					XSSFRow row = sheet.createRow(rowNumber);
+					List<Object> rowData = sheetData.get(j);
+					for (int k = 0; k < rowData.size(); k++) {
+						XSSFCell cell = row.createCell(k);
+						Object data = rowData.get(k);
+						cell.setCellValue(StringUtil.parseNull(data));
+					}
+					rowNumber++;
+				}
 			}
 		}
 		return workBook;
