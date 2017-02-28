@@ -513,6 +513,23 @@ public class IdCardUtil {
 		return idCard.substring(6, 10) + "-" + idCard.substring(10, 12) + "-"
 				+ idCard.substring(12, 14);
 	}
+	
+	/**
+	 * 根据身份编号获取生日
+	 * 
+	 * @param idCard 身份编号
+	 * @return 生日(yyyy/MM/dd)
+	 */
+	public static String getBirthByCard(String idCard) {
+		Integer len = idCard.length();
+		if (len < CHINA_ID_MIN_LENGTH) {
+			return null;
+		} else if (len == CHINA_ID_MIN_LENGTH) {
+			idCard = conver15CardTo18(idCard);
+		}
+		return idCard.substring(6, 10) + "/" + idCard.substring(10, 12) + "/"
+		+ idCard.substring(12, 14);
+	}
 
 	/**
 	 * 根据身份编号获取生日年
