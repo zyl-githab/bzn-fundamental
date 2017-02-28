@@ -583,6 +583,26 @@ public class IdCardUtil {
 	}
 
 	/**
+	 * 根据身份编号获取性别
+	 * 
+	 * @param idCard 身份编号
+	 * @return 性别(1-男，0-女，2-未知)
+	 */
+	public static Integer getGenderByCard(String idCard) {
+		Integer gender = 0;
+		if (idCard.length() == CHINA_ID_MIN_LENGTH) {
+			idCard = conver15CardTo18(idCard);
+		}
+		String sCardNum = idCard.substring(16, 17);
+		if (Integer.parseInt(sCardNum) % 2 != 0) {
+			gender = 1;
+		} else {
+			gender = 0;
+		}
+		return gender;
+	}
+
+	/**
 	 * 根据身份编号获取户籍省份
 	 * 
 	 * @param idCard 身份编码
