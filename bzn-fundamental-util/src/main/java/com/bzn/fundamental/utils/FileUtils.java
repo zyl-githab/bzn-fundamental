@@ -15,9 +15,7 @@ import javax.servlet.http.HttpServletResponse;
  * 描述: 文件工具类</br>
  */
 public class FileUtils {
-	
-	public static final String EMPINFO_TEMPLET_NAME = "_参保员工信息模板";
-	
+
 	/**
 	 * Java文件操作, 获取不带扩展名的文件名
 	 * 
@@ -121,16 +119,6 @@ public class FileUtils {
 	public static String getPreserveXlsTempletName(String rootPath, String fileName) {
 		// 获取模板文件全限定名
 		return getFullyFileName(rootPath, fileName + "_preserve", ".xls");
-	}
-
-	/**
-	 * 获取下载文件名
-	 *
-	 * @param fileName 文件名
-	 * @return
-	 */
-	public static String getDownloadName(String fileName, String ext) {
-		return getCustomFileName(fileName, EMPINFO_TEMPLET_NAME, ext);
 	}
 
 	/**
