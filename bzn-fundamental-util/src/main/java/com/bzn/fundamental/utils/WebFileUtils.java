@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.Random;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -14,11 +15,17 @@ import java.util.zip.ZipOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
+
+import com.bzn.fundamental.response.ObjectResponseDTO;
 
 public class WebFileUtils {
 
@@ -39,7 +46,7 @@ public class WebFileUtils {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * 文件下载
 	 * 
@@ -56,6 +63,36 @@ public class WebFileUtils {
 		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 		return new ResponseEntity<byte[]>(org.apache.commons.io.FileUtils.readFileToByteArray(file),
 				headers, HttpStatus.OK);
+	}
+
+	/**
+	 * 文件上传返回数据处理
+	 * 
+	 * @throws IOException
+	 * @throws JsonMappingException
+	 * @throws JsonGenerationException
+	 */
+	public static ResponseEntity<String> writeResponseData(ObjectResponseDTO object) {
+		// uploadify由Flash发出请求, 和常规Ajax不太一样, 需要如下处理
+		String response = StringUtils.EMPTY;
+		try {
+			response = new ObjectMapper().writeValueAsString(object);
+		} catch (JsonGenerationException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// 防止中文乱码
+		HttpHeaders responseHeaders = new HttpHeaders();
+		MediaType mediaType = new MediaType("text", "html", Charset.forName("UTF-8"));
+		responseHeaders.setContentType(mediaType);
+
+		ResponseEntity<String> entity = new ResponseEntity<String>(response, responseHeaders,
+				HttpStatus.CREATED);
+		return entity;
 	}
 
 	/**

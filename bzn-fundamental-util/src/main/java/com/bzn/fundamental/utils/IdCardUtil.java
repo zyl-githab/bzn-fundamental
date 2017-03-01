@@ -203,7 +203,7 @@ public class IdCardUtil {
 					// 获取校验位
 					String val = getCheckCode18(iSum17);
 					if (val.length() > 0) {
-						if (val.equalsIgnoreCase(code18)) {
+						if (val.equals(code18)) {
 							bTrue = true;
 						}
 					}
@@ -426,7 +426,7 @@ public class IdCardUtil {
 			sCode = "9";
 			break;
 		case 2:
-			sCode = "x";
+			sCode = "X";
 			break;
 		case 1:
 			sCode = "0";
@@ -513,6 +513,23 @@ public class IdCardUtil {
 		return idCard.substring(6, 10) + "-" + idCard.substring(10, 12) + "-"
 				+ idCard.substring(12, 14);
 	}
+	
+	/**
+	 * 根据身份编号获取生日
+	 * 
+	 * @param idCard 身份编号
+	 * @return 生日(yyyy/MM/dd)
+	 */
+	public static String getBirthByCard(String idCard) {
+		Integer len = idCard.length();
+		if (len < CHINA_ID_MIN_LENGTH) {
+			return null;
+		} else if (len == CHINA_ID_MIN_LENGTH) {
+			idCard = conver15CardTo18(idCard);
+		}
+		return idCard.substring(6, 10) + "/" + idCard.substring(10, 12) + "/"
+		+ idCard.substring(12, 14);
+	}
 
 	/**
 	 * 根据身份编号获取生日年
@@ -578,6 +595,26 @@ public class IdCardUtil {
 			gender = 1;
 		} else {
 			gender = 2;
+		}
+		return gender;
+	}
+
+	/**
+	 * 根据身份编号获取性别
+	 * 
+	 * @param idCard 身份编号
+	 * @return 性别(1-男，0-女，2-未知)
+	 */
+	public static Integer getGenderByCard(String idCard) {
+		Integer gender = 0;
+		if (idCard.length() == CHINA_ID_MIN_LENGTH) {
+			idCard = conver15CardTo18(idCard);
+		}
+		String sCardNum = idCard.substring(16, 17);
+		if (Integer.parseInt(sCardNum) % 2 != 0) {
+			gender = 1;
+		} else {
+			gender = 0;
 		}
 		return gender;
 	}
