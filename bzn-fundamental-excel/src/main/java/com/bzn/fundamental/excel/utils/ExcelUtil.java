@@ -363,7 +363,11 @@ public class ExcelUtil {
 							} else if (HSSFDateUtil.isCellDateFormatted(cell)) {
 								SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 								Date theDate = cell.getDateCellValue();
-								value = sdf.format(theDate);
+								if (theDate == null) {
+									value = "";
+								} else {
+									value = sdf.format(theDate);
+								}
 							} else {
 								value = "";
 							}
