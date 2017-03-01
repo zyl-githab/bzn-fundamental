@@ -203,7 +203,7 @@ public class IdCardUtil {
 					// 获取校验位
 					String val = getCheckCode18(iSum17);
 					if (val.length() > 0) {
-						if (val.equalsIgnoreCase(code18)) {
+						if (val.equals(code18)) {
 							bTrue = true;
 						}
 					}
