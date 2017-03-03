@@ -637,13 +637,19 @@ public class DateUtils {
 	}
 
 	/**
-	 * 校验日期格式是否正确
+	 * 校验日期格式是否正确(根据要求设置1988/11/16)
 	 * 
 	 * @param dateStr
 	 * @return
 	 */
 	public static boolean isValidDate(String dateStr) {
 		if (null == dateStr || "".equals(dateStr)) {
+			return false;
+		}
+		SimpleDateFormat format = new SimpleDateFormat(DateUtils.CN_SPRIT_DATE_FORMAT_DAY);
+		try {
+			format.parse(dateStr);
+		} catch (ParseException e) {
 			return false;
 		}
 		String eL = "^((\\d{2}(([02468][048])|([13579][26]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])))))"
