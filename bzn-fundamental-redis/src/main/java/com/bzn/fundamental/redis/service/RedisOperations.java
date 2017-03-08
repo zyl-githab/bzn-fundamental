@@ -158,4 +158,23 @@ public interface RedisOperations {
 	 * @param key
 	 */
 	void unLock(String key);
+
+	/**
+	 * 原子操作，设置key的value，返回老的value
+	 *
+	 * @param key 键
+	 * @param value 值
+	 * @return
+	 */
+	String getSet(String key, String value);
+
+	/**
+	 * redis 分布式锁
+	 *
+	 * @param key 键值
+	 * @param timeOutSecs 超时时间（s）
+	 * @param expireSecs 到期时间（s）
+	 * @return
+	 */
+	Boolean tryLock(String key, Long timeOutSecs, Long expireSecs) throws InterruptedException;
 }

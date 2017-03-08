@@ -1,12 +1,16 @@
 package com.bzn.fundamental.redis.service.impl;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -145,4 +149,57 @@ public class RedisOperationsImpl implements RedisOperations {
 		redisTemplate.expire(key, timeout, TimeUnit.SECONDS);
 	}
 
+	/**
+	 * 原子操作，设置key的value，返回老的value
+	 *
+	 * @param key 键
+	 * @param value 值
+	 * @return
+	 */
+	@Override
+	public String getSet(final String key, final String value) {
+		return redisTemplate.execute(new RedisCallback<String>() {
+			@Override
+			public String doInRedis(RedisConnection redisConnection) throws DataAccessException {
+				byte[] result = redisConnection.getSet(redisTemplate.getStringSerializer().serialize(key),
+						redisTemplate.getStringSerializer().serialize(value));
+				if (result != null) {
+					return new String(result);
+				}
+				return null;
+			}
+		});
+	}
+
+	/**
+	 * redis 分布式锁
+	 *
+	 * @param key 键值
+	 * @param timeOutSecs 超时时间（s）
+	 * @param expireSecs 到期时间（s）
+	 * @return
+	 */
+	@Override
+	public synchronized Boolean tryLock(String key, Long timeOutSecs, Long expireSecs) throws InterruptedException{
+		while (timeOutSecs > 0L) {
+			long expires = System.currentTimeMillis() + expireSecs + 1;
+			String expiresStr = String.valueOf(expires); // 锁到期时间
+			if (setNx(key, expiresStr)) {
+				return true;
+			}
+
+			String currentValueStr = get(key); // redis中存储的到期时间
+			// 已经到期
+			if (currentValueStr != null && Long.parseLong(currentValueStr) < System.currentTimeMillis()) {
+				String oldValueStr = getSet(key, expiresStr);
+				if (Objects.equals(oldValueStr, currentValueStr)) {
+					// 多个线程到了这里，只有一个线程的设置值和当前值相同
+					return true;
+				}
+			}
+			timeOutSecs -= 100;
+			Thread.sleep(100);
+		}
+		return false;
+	}
 }
