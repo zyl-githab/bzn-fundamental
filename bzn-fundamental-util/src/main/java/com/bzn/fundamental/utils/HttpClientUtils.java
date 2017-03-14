@@ -1,5 +1,8 @@
 package com.bzn.fundamental.utils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
@@ -10,23 +13,30 @@ import java.util.Map.Entry;
 
 import javax.net.ssl.SSLContext;
 
+import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.config.SocketConfig;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
@@ -127,7 +137,99 @@ public class HttpClientUtils {
 		}
 		return response;
 	}
+	
+	/**
+	 * POST
+	 * @param reqURL
+	 * @param params json字符串
+	 * @return
+	 */
+	public String postJson(String reqURL, String params) {
+		String responseContent = null;
+		HttpPost httpPost = new HttpPost(reqURL);
+		try {
+			RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(connectTimeout)
+					.setConnectTimeout(connectTimeout)
+					.setConnectionRequestTimeout(connectTimeout).build();
 
+			StringEntity se = new StringEntity(params, ContentType.APPLICATION_JSON);
+			httpPost.setEntity(se);
+			httpPost.setConfig(requestConfig);
+			CloseableHttpClient httpClient = this.getConnection();
+			CloseableHttpResponse response = httpClient.execute(httpPost);
+			try {
+				// 执行POST请求
+				HttpEntity entity = response.getEntity(); // 获取响应实体
+				try {
+					if (null != entity) {
+						responseContent = EntityUtils.toString(entity, Consts.UTF_8);
+					}
+				} finally {
+					if (entity != null) {
+						entity.getContent().close();
+					}
+				}
+			} finally {
+				if (response != null) {
+					response.close();
+				}
+			}
+			LOGGER.info("requestURI : " + httpPost.getURI());
+			LOGGER.info(", responseContent: " + responseContent);
+		} catch (ClientProtocolException e) {
+			LOGGER.error("ClientProtocolException", e);
+		} catch (IOException e) {
+			LOGGER.error("IOException", e);
+		} finally {
+			httpPost.releaseConnection();
+		}
+		return responseContent;
+	}
+
+	/**
+	 * http Post服务
+	 * 
+	 * @param strJson
+	 * @return 返回数据
+	 */
+	public String post(String url, String strJson) {
+		String rspText = null;
+		BufferedReader in = null;
+		StringBuffer stringBuffer = new StringBuffer();
+		CloseableHttpResponse response =null;
+		HttpRequestBase httpMethod = new HttpPost(url);
+		try {
+
+			StringEntity entity = new StringEntity(String.valueOf(strJson), "UTF-8");
+			entity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+			((HttpPost) httpMethod).setEntity(entity);
+			int statusCode = 0;
+			CloseableHttpClient httpClient = this.getConnection();
+			response = httpClient.execute(httpMethod);
+			statusCode = response.getStatusLine().getStatusCode();
+			if (statusCode == 200) {
+				HttpEntity resEntity = response.getEntity();
+				in = new BufferedReader(new InputStreamReader(resEntity.getContent(), "UTF-8"));
+				while ((rspText = in.readLine()) != null) {
+					stringBuffer.append(rspText);
+				}
+				rspText = stringBuffer.toString();
+			}
+			LOGGER.info(String.format("post响应信息  -> %s \t %s", statusCode, rspText));
+		} catch (Exception e) {
+			LOGGER.error("发送数据 error, url:",e);
+		} finally {
+
+			httpMethod.releaseConnection();
+			try {
+				response.close();
+			} catch (IOException e) {
+				LOGGER.error("rsponse.close error:",e);
+			}
+		}
+		return rspText;
+	}
+	
 	public String get(String url, Map<String, String> params) {
 		String responseString = null;
 		StringBuilder sb = new StringBuilder();
