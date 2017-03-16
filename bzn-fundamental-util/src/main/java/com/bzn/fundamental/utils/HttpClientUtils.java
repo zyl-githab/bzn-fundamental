@@ -252,7 +252,7 @@ public class HttpClientUtils {
 			}
 			i++;
 		}
-		HttpGet get = new HttpGet(url);
+		HttpGet get = new HttpGet(sb.toString());
 		try {
 			CloseableHttpResponse response = this.getConnection().execute(get);
 			try {

@@ -717,4 +717,100 @@ public class DateUtils {
 	public static String getTodayEndTime() {
 		return DATE_FORMAT_DATE.format(new Date()) + " 23:59:59";
 	}
+
+	public static Date offset(Date date, int field, int amount) {
+		if (date == null)
+			return null;
+		Calendar newDate = getCalendar(date);
+		newDate.add(field, amount);
+
+		return newDate.getTime();
+	}
+
+	public static Date offsetYears(Date date, int amount) {
+		return offset(date, Calendar.YEAR, amount);
+	}
+
+	public static int getYear(Date date) {
+		return getCalendar(date).get(Calendar.YEAR);
+	}
+
+	public static boolean isLeapYear(Date date) {
+		int year = getYear(date);
+
+		if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public static int getLastDayOfYear(Date date) {
+		return isLeapYear(date) ? 366 : 365;
+	}
+
+	public static int getInterval(Date fromDate, Date toDate, int field) {
+		Calendar fromDateC = getCalendar(fromDate);
+		Calendar toDateC = getCalendar(toDate);
+		if (toDateC.before(fromDate)) {
+			return 0;
+		}
+
+		if (Calendar.YEAR == field) {
+			return toDateC.get(Calendar.YEAR) - fromDateC.get(Calendar.YEAR);
+		} else if (Calendar.MONTH == field) {
+			int months = 0;
+			int intervalYears = (toDateC.get(Calendar.YEAR) - fromDateC.get(Calendar.YEAR));
+			if (intervalYears == 0) {
+				months = toDateC.get(Calendar.MONTH) - fromDateC.get(Calendar.MONTH);
+			} else {
+				int months_h = (11 - fromDateC.get(Calendar.MONTH));
+				int months_f = toDateC.get(Calendar.MONTH) + 1;
+				int months_m = intervalYears <= 1 ? 0 : ((intervalYears - 1) * 12);
+
+				months = (months_h + months_m + months_f);
+			}
+
+			return months;
+		} else if (Calendar.DATE == field) {
+			int days = 0;
+			int intervalYears = (toDateC.get(Calendar.YEAR) - fromDateC.get(Calendar.YEAR));
+			if (intervalYears == 0) {
+				days = toDateC.get(Calendar.DAY_OF_YEAR) - fromDateC.get(Calendar.DAY_OF_YEAR);
+			} else {
+				int days_h = getLastDayOfYear(fromDate) - fromDateC.get(Calendar.DAY_OF_YEAR);
+				int days_f = toDateC.get(Calendar.DAY_OF_YEAR);
+				int days_m = 0;
+				if (intervalYears > 1) {
+					Date tmpDate = null;
+					for (int i = 1; i < intervalYears; i++) {
+						tmpDate = offsetYears(fromDate, 1);
+						days_m += getLastDayOfYear(tmpDate);
+					}
+				}
+
+				days = (days_h + days_m + days_f);
+			}
+
+			return days;
+		}
+
+		return 0;
+	}
+
+	public static int getIntervalDays(Date fromDate, Date toDate) {
+		return getInterval(fromDate, toDate, Calendar.DATE);
+	}
+
+	public static int getIntervalMonths(Date fromDate, Date toDate) {
+		return getInterval(fromDate, toDate, Calendar.MONTH);
+	}
+
+	public static int getIntervalYears(Date fromDate, Date toDate) {
+		return getInterval(fromDate, toDate, Calendar.YEAR);
+	}
+
+	public static int birthdayToAge(Date date) {
+		return getIntervalYears(date, new Date());
+	}
 }
