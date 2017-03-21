@@ -225,7 +225,22 @@ public class DateUtils {
 				(DateUtils.getMillisByYMD(time, DateUtils.CN_DATETIME_FORMAT) + getTime(day)),
 				DateUtils.CN_DATETIME_FORMAT);
 	}
-
+	
+	/**
+	 * 将指定日期添加day天,默认在当天添加
+	 * 
+	 * @return
+	 */
+	public static Date addDay(Integer day,Date date) {
+		Calendar cal = Calendar.getInstance();
+		if(date == null){
+			date = new Date();
+		}
+		cal.setTime(date);
+		cal.add(Calendar.DATE, day);
+		return getDayStartTime(cal.getTime());
+	}
+	
 	/**
 	 * 添加分钟数
 	 * 
@@ -507,6 +522,21 @@ public class DateUtils {
 	 */
 	public static Date getCurrentDayStartTime() {
 		Date now = new Date();
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			now = sdf.parse(sdf.format(now));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return now;
+	}
+
+	/**
+	 * 获得指定天的开始时间，即2012-01-01 00:00:00
+	 * 
+	 * @return
+	 */
+	public static Date getDayStartTime(Date now) {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			now = sdf.parse(sdf.format(now));
