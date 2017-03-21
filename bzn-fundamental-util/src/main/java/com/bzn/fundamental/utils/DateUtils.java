@@ -225,7 +225,22 @@ public class DateUtils {
 				(DateUtils.getMillisByYMD(time, DateUtils.CN_DATETIME_FORMAT) + getTime(day)),
 				DateUtils.CN_DATETIME_FORMAT);
 	}
-
+	
+	/**
+	 * 将指定日期添加day天,默认在当天添加
+	 * 
+	 * @return
+	 */
+	public static Date addDay(Integer day,Date date) {
+		Calendar cal = Calendar.getInstance();
+		if(date == null){
+			date = new Date();
+		}
+		cal.setTime(date);
+		cal.add(Calendar.DATE, day);
+		return cal.getTime();
+	}
+	
 	/**
 	 * 添加分钟数
 	 * 
