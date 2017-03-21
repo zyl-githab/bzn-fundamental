@@ -226,7 +226,7 @@ public class DateUtils {
 				DateUtils.CN_DATETIME_FORMAT);
 	}
 	
-	/**
+	/** 
 	 * 将指定日期添加day天,默认在当天添加
 	 * 
 	 * @return
