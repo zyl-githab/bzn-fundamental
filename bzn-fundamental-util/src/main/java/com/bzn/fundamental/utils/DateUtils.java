@@ -241,6 +241,21 @@ public class DateUtils {
 		return getDayStartTime(cal.getTime());
 	}
 	
+	/** 
+	 * 将指定日期添加minute分钟,默认在当前实际添加
+	 * 
+	 * @return
+	 */
+	public static Date addMinute(Integer minute,Date date) {
+		Calendar cal = Calendar.getInstance();
+		if(date == null){
+			date = new Date();
+		}
+		cal.setTime(date);
+		cal.add(Calendar.MINUTE , minute);
+		return cal.getTime();
+	}
+	
 	/**
 	 * 添加分钟数
 	 * 
