@@ -706,6 +706,31 @@ public class DateUtils {
 	}
 
 	/**
+	 * 校验日期格式是否正确(根据要求设置)
+	 * 
+	 * @param dateStr
+	 * @param formatStr 格式化格式
+	 * @return
+	 */
+	public static boolean isValidDate(String dateStr, String formatStr) {
+		if (null == dateStr || "".equals(dateStr)) {
+			return false;
+		}
+		SimpleDateFormat format = new SimpleDateFormat(formatStr);
+		try {
+			format.parse(dateStr);
+		} catch (ParseException e) {
+			return false;
+		}
+		String eL = "^((\\d{2}(([02468][048])|([13579][26]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])))))"
+				+ "|(\\d{2}(([02468][1235679])|([13579][01345789]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|(1[0-9])|(2[0-8])))))"
+				+ ")";
+		Pattern p = Pattern.compile(eL);
+		Matcher m = p.matcher(dateStr);
+		return m.matches();
+	}
+
+	/**
 	 * 判断日期大小
 	 * 
 	 * @param srcDate 源日期
