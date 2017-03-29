@@ -447,4 +447,13 @@ public class StringUtils extends StringUtil {
 		int separatorIndex = path.lastIndexOf("/");
 		return (separatorIndex != -1 ? path.substring(separatorIndex + 1) : path);
 	}
+	
+	public static String getUTF8StringFromGBKString(String gbkStr){
+	    StringBuffer output = new StringBuffer();
+	    for (int i = 0; i < gbkStr.length(); i++)
+	    {
+	        output.append("&#x" +Integer.toString(gbkStr.charAt(i), 16) + ";");
+	    }        
+	   return output.toString(); 
+	}
 }

@@ -227,6 +227,36 @@ public class DateUtils {
 	}
 
 	/**
+	 * 将指定日期添加day天,默认在当天添加
+	 * 
+	 * @return
+	 */
+	public static Date addDay(Integer day, Date date) {
+		Calendar cal = Calendar.getInstance();
+		if (date == null) {
+			date = new Date();
+		}
+		cal.setTime(date);
+		cal.add(Calendar.DATE, day);
+		return getDayStartTime(cal.getTime());
+	}
+
+	/**
+	 * 将指定日期添加minute分钟,默认在当前实际添加
+	 * 
+	 * @return
+	 */
+	public static Date addMinute(Integer minute, Date date) {
+		Calendar cal = Calendar.getInstance();
+		if (date == null) {
+			date = new Date();
+		}
+		cal.setTime(date);
+		cal.add(Calendar.MINUTE, minute);
+		return cal.getTime();
+	}
+
+	/**
 	 * 添加分钟数
 	 * 
 	 * @param time
@@ -507,6 +537,21 @@ public class DateUtils {
 	 */
 	public static Date getCurrentDayStartTime() {
 		Date now = new Date();
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			now = sdf.parse(sdf.format(now));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return now;
+	}
+
+	/**
+	 * 获得指定天的开始时间，即2012-01-01 00:00:00
+	 * 
+	 * @return
+	 */
+	public static Date getDayStartTime(Date now) {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			now = sdf.parse(sdf.format(now));
@@ -810,7 +855,44 @@ public class DateUtils {
 		return getInterval(fromDate, toDate, Calendar.YEAR);
 	}
 
+	@Deprecated
 	public static int birthdayToAge(Date date) {
 		return getIntervalYears(date, new Date());
+	}
+
+	/**
+	 * 出生日期计算年龄
+	 * 
+	 * @param birthday 出生日期
+	 * @param endDate 计算到哪天日期
+	 * @return
+	 */
+	public static int getAgeFromBirthday(Date birthday, Date endDate) {
+		Calendar birthDateC = getCalendar(birthday);
+		Calendar endDateC = getCalendar(endDate);
+		if (endDateC.before(birthDateC)) {
+			return 0;
+		}
+		int birthYear = birthDateC.get(Calendar.YEAR);
+		int birthMonth = birthDateC.get(Calendar.MONTH);
+		int birthDayOfMonth = birthDateC.get(Calendar.DAY_OF_MONTH);
+
+		int endYear = endDateC.get(Calendar.YEAR);
+		int endMonth = endDateC.get(Calendar.MONTH);
+		int endDayOfMonth = endDateC.get(Calendar.DAY_OF_MONTH);
+
+		int age = endYear - birthYear;
+
+		if (endMonth < birthMonth) {
+			age--;
+		} else if (endMonth == birthMonth) {
+			if (endDayOfMonth < birthDayOfMonth)
+				age--;
+		}
+		return age;
+	}
+
+	public static int getAgeFromBirthday(Date birthday) {
+		return getAgeFromBirthday(birthday, new Date());
 	}
 }
