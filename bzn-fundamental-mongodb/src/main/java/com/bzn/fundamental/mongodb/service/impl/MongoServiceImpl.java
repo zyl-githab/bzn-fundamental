@@ -28,7 +28,7 @@ import com.mongodb.WriteResult;
 @Service
 public class MongoServiceImpl<T> implements MongoService<T> {
 
-	@Autowired
+	@Autowired(required = false)
 	private MongoTemplate mongoTemplate;
 
 	@Override
