@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 /**
  * 日期处理工具类
  * 
@@ -80,12 +81,15 @@ public class DateUtils {
 	 * yyyy/MM/dd HH:mm
 	 */
 	public static final String CN_SPRIT_DATE_FORMAT_MINUTE = "yyyy/MM/dd HH:mm";
+	
+    public static String DATE_FORMAT_TIME_STRING = "HH:mm:ss";
 
 	public static String DATE_FORMAT_FULL_STRING = "yyyy-MM-dd HH:mm:ss";
 	public static String DATE_FORMAT_DATE_STRING = "yyyy-MM-dd";
 	public static SimpleDateFormat DATE_FORMAT_DATE = new SimpleDateFormat(CN_DATE_FORMAT);
 	public static String[] DATE_FORMATS_PATTERN = new String[] { "dd/MM/yyyy", "yyyy-MM-dd",
 			"yyyy/MM/dd", "yyyyMMdd" };
+	public static SimpleDateFormat DATE_FORMAT_FULL = new SimpleDateFormat(DATE_FORMAT_FULL_STRING);
 
 	/**
 	 * 转换String时间为Date
@@ -956,4 +960,62 @@ public class DateUtils {
 		}
 		return date;
 	}
+
+	public static int getCurrentDayOfMonth() {
+		return Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+	}
+
+	public static String getDayFullDateTime(int nextOrPreviousCount) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DAY_OF_YEAR, nextOrPreviousCount);
+		return DATE_FORMAT_FULL.format(calendar.getTime());
+	}
+
+	public static Date parse(String source) {
+		if (StringUtils.isEmpty(source))
+			return null;
+
+		switch (source.length()) {
+		case 19:
+			return parseFull(source);
+		case 10:
+			return parseDate(source);
+		case 8:
+			return parseTime(source);
+		default:
+			throw new IllegalArgumentException("Could not parse date");
+		}
+	}
+
+	/**
+	 * 解析时间字符串(yyyy-MM-dd HH:mm:ss)转换为Date对象
+	 * 
+	 * @param source
+	 * @return
+	 * @sample
+	 * 
+	 *         <pre>
+	 *  1. DateUtil.parseFull('2012-01-12 10:11:12')
+	 *         </pre>
+	 */
+	public static Date parseFull(String source) {
+		return parse(source, new SimpleDateFormat(DATE_FORMAT_FULL_STRING));
+	}
+
+	public static Date parseDate(String source) {
+		return parse(source, new SimpleDateFormat(DATE_FORMAT_DATE_STRING));
+	}
+
+	public static Date parseTime(String source) {
+		return parse(source, new SimpleDateFormat(DATE_FORMAT_TIME_STRING));
+	}
+	
+    public static Date parse(String source, SimpleDateFormat sdf) {
+        if (StringUtils.isEmpty(source)) return null;
+        try {
+            return sdf.parse(source);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e.getMessage(), e);
+        }
+    }
 }
