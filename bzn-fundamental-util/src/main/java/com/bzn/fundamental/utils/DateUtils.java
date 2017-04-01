@@ -84,6 +84,8 @@ public class DateUtils {
 	public static String DATE_FORMAT_FULL_STRING = "yyyy-MM-dd HH:mm:ss";
 	public static String DATE_FORMAT_DATE_STRING = "yyyy-MM-dd";
 	public static SimpleDateFormat DATE_FORMAT_DATE = new SimpleDateFormat(CN_DATE_FORMAT);
+	public static String[] DATE_FORMATS_PATTERN = new String[] { "dd/MM/yyyy", "yyyy-MM-dd",
+			"yyyy/MM/dd", "yyyyMMdd" };
 
 	/**
 	 * 转换String时间为Date
@@ -919,5 +921,39 @@ public class DateUtils {
 
 	public static int getAgeFromBirthday(Date birthday) {
 		return getAgeFromBirthday(birthday, new Date());
+	}
+
+	/**
+	 * 尝试解析日期类型， 目前支持的格式为："dd/MM/yyyy","yyyy-MM-dd","yyyy/MM/dd","yyyyMMdd"
+	 * 
+	 * @param source 源字符串
+	 * @return Date，如果可以解析则返回Date，否则返回Null
+	 */
+	public static Date tryParseDate(String source) {
+		Date date = null;
+		for (String p : DATE_FORMATS_PATTERN) {
+			date = tryParseDate(source, p);
+			if (date != null)
+				return date;
+		}
+		return null;
+	}
+
+	/**
+	 * 根据指定的pattern解析source为Date类型
+	 * 
+	 * @param source 源字符串
+	 * @param pattern 模板格式
+	 * @return 如果可以解析返回Date，否则返回Null
+	 */
+	public static Date tryParseDate(String source, String pattern) {
+		Date date = null;
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+			date = sdf.parse(source);
+		} catch (Exception ex) {
+
+		}
+		return date;
 	}
 }
