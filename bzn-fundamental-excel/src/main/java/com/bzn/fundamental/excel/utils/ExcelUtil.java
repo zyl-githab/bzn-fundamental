@@ -399,6 +399,102 @@ public class ExcelUtil {
 		return dataList;
 	}
 
+	/**
+	 * 导入excel 去掉日期格式化
+	 * 
+	 * @param input
+	 * @return
+	 */
+	@SuppressWarnings("deprecation")
+	public static List<List<Object>> newReadExcel(InputStream input, String excelType,
+			int sheetIndex, int beginReadRow, int beginReadCol) {
+		List<List<Object>> dataList = new ArrayList<List<Object>>();
+		// 新建WorkBook
+		Workbook wb = null;
+		try {
+			if (ExcelExporter.EXCEL_TYPE_XLS.equals(excelType)) {
+				wb = new HSSFWorkbook(input);
+			} else {
+				wb = new XSSFWorkbook(input);
+			}
+			// 获取Sheet（工作薄）
+			Sheet sheet = wb.getSheetAt(sheetIndex);
+
+			// 开始行数
+			int firstRow = sheet.getFirstRowNum();
+			// 结束行数
+			int lastRow = sheet.getLastRowNum();
+			// 表头列数
+			int rowCellCount = sheet.getRow(firstRow).getLastCellNum();
+			// 判断该Sheet（工作薄）是否为空
+			boolean isEmpty = false;
+			if (firstRow == lastRow || beginReadRow > lastRow) {
+				isEmpty = true;
+			}
+			if (!isEmpty) {
+				for (int j = beginReadRow; j <= lastRow; j++) {
+					// 获取一行
+					Row row = sheet.getRow(j);
+					// 判断该行是否为空
+					if (row == null || isBlankRow(row)) {
+						dataList.add(null);
+						continue;
+					}
+					// 结束列数
+					// int lastCell = row.getLastCellNum();
+					List<Object> rowData = new ArrayList<Object>();
+					if (beginReadCol != rowCellCount) {
+						for (int k = beginReadCol; k < rowCellCount; k++) {
+							// 获取一个单元格
+							Cell cell = row.getCell(k);
+
+							if (cell == null) {
+								rowData.add("");
+								continue;
+							}
+							Object value = null;
+
+							int cellType = cell.getCellType();
+							if (cellType == CellType.NUMERIC.getCode()) {
+								if (HSSFDateUtil.isCellDateFormatted(cell)) {
+									SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+									Date date = cell.getDateCellValue();
+									value = sdf.format(date);
+
+								} else {
+									value = StringUtil.doubleTrans(cell.getNumericCellValue());
+								}
+							} else {
+								value = cell.getStringCellValue();
+							}
+							rowData.add(value);
+						}
+					}
+					dataList.add(rowData);
+				}
+			}
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage());
+		} finally {
+			if (wb != null) {
+				try {
+					wb.close();
+				} catch (IOException e) {
+					LOGGER.error(e.getMessage());
+				}
+			}
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					LOGGER.error(e.getMessage());
+				}
+			}
+		}
+
+		return dataList;
+	}
+
 	@SuppressWarnings("deprecation")
 	private static boolean isBlankRow(Row row) {
 		Iterator<Cell> cellIterator = row.cellIterator();
