@@ -723,6 +723,7 @@ public class DateUtils {
 			return false;
 		}
 		SimpleDateFormat format = new SimpleDateFormat(formatStr);
+		format.setLenient(false);
 		try {
 			format.parse(dateStr);
 		} catch (ParseException e) {
