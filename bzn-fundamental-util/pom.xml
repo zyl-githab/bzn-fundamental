@@ -2,11 +2,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.baozhunniu</groupId>
-		<artifactId>bzn-fundamental</artifactId>
+		<groupId>com.like</groupId>
+		<artifactId>like-fundamental</artifactId>
 		<version>1.0.0</version>
 	</parent>
-	<artifactId>bzn-fundamental-util</artifactId>
+	<artifactId>like-fundamental-util</artifactId>
 	<packaging>jar</packaging>
 
 	<dependencies>

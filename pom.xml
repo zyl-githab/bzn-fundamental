@@ -2,20 +2,20 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.baozhunniu</groupId>
-		<artifactId>bzn-parent</artifactId>
+		<groupId>com.like</groupId>
+		<artifactId>like-parent</artifactId>
 		<version>1.0.0</version>
 	</parent>
-	<artifactId>bzn-fundamental</artifactId>
+	<artifactId>like-fundamental</artifactId>
 	<packaging>pom</packaging>
 	<modules>
-		<module>bzn-fundamental-mongodb</module>
-		<module>bzn-fundamental-redis</module>
-		<module>bzn-fundamental-util</module>
-		<module>bzn-fundamental-sms</module>
-		<module>bzn-fundamental-thunder</module>
-		<module>bzn-fundamental-rpc</module>
-		<module>bzn-fundamental-mail</module>
-		<module>bzn-fundamental-excel</module>
+		<module>like-fundamental-mongodb</module>
+		<module>like-fundamental-redis</module>
+		<module>like-fundamental-util</module>
+		<module>like-fundamental-sms</module>
+		<module>like-fundamental-thunder</module>
+		<module>like-fundamental-rpc</module>
+		<module>like-fundamental-mail</module>
+		<module>like-fundamental-excel</module>
 	</modules>
 </project>
